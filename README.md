@@ -47,5 +47,4 @@ WordToDouble - ChatGPT. (2023, April 25). C# method to convert a word to a numbe
 https://github.com/VCCT-PROG6221-2023-Grp2/PROG6221_POE.git
 
 ## License
-
 This project is licensed under the MIT License - see the LICENSE.txt file for details.
