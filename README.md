@@ -3,11 +3,11 @@
 
 This program is a console application that enables users to create, display, scale, and delete recipes using C# programming. The application provides a user-friendly interface that is easy to navigate, making it accessible to beginners and experienced programmers alike.
 
-Two interesting features of this program is the use of animations when displaying messages or prompts in the console. This not only makes the program more engaging and enjoyable to use, but also helps users stay informed about the program's progress. Additionally, this program has the ability to handle both words and numbers when quantities are concerned, allowing the user to enter, for example "one" or 1 and expect the same reaction and output from the programme. 
+Two interesting features of this program are the use of animations when displaying messages or prompts in the console. This not only makes the program more engaging and enjoyable to use but also helps users stay informed about the program's progress. Additionally, this program has the ability to handle both words and numbers when quantities are concerned, allowing the user to enter, for example, "one" or 1 and expect the same reaction and output from the programme. 
 
-The user can enter ingredients with different units of measurement, such as cups, tablespoons, or teaspoons, grams, kilograms or cutsom units and the program will handle them accordingly so that the output is consistent and accurate. It does this by automatic scaling of non-custom units. Such as converting grams to kilograms or tablespoons to cups.
+The user can enter ingredients with different units of measurement, such as cups, tablespoons, teaspoons, grams, kilograms or custom units. The program will handle them accordingly so that the output is consistent and accurate. It does this by automatic scaling of non-custom units. Such as converting grams to kilograms or tablespoons to cups.
 
-Additionally, error handling features have been integrated into the program to prevent crashes or unexpected behavior in case the user enters invalid input. For example, if the user enters a non-numeric value where a numeric value is expected, the program will display an error message and prompt the user to enter valid input.
+Additionally, error-handling features have been integrated into the program to prevent crashes or unexpected behaviour in case the user enters invalid input. For example, if the user enters a non-numeric value where a numeric value is expected, the program will display an error message and prompt the user to enter valid input.
 
 ## Getting Started
 
@@ -42,7 +42,7 @@ When you run the program, you will be presented with a menu of options that you 
 
 To select an option, simply enter the number that corresponds to it and press "Enter" on your keyboard.
 
-If you select option 1, you will begin the process of entering a new recipe. The program will guide you through a series of prompts to input the nessesary information to create a new recipe.
+If you select option 1, you will begin the process of entering a new recipe. The program will guide you through a series of prompts to input the necessary information to create a new recipe.
 
 If you select option 2, you will begin the process of displaying a stored recipe. The program will guide you through a series of prompts to display a stored recipe.
 
@@ -51,13 +51,13 @@ If you select option 3, you will begin the process of deleting a stored recipe. 
 If you select option 4, the program will exit.
 
 ## Creating New Recipe
-If the user selects 1) from the main menu the prompts that will follow will guide the user through creating a new recipe. If there is a recipe stored, the user will be asked to delete that recipe or the operation will be aborted. If the user confirms by replying with "yes"/"y" the recipe will be deleted and the process of creating a new recipe will continue. If they respond with "no"/"n" then the operation will be aborted. None of the inputs can be null. None of the quantities can be a negtive number. If 0 steps or ingredients are entered the operation will be aborted and the user will be informed why. The user can enter quantities in the form of a word or in the form of a numeric value ("1"/"one").
+If the user selects 1) from the main menu the prompts that will follow will guide the user through creating a new recipe. If there is a recipe stored, the user will be asked to delete that recipe or the operation will be aborted. If the user confirms by replying with "yes"/"y" the recipe will be deleted and the process of creating a new recipe will continue. If they respond with "no"/"n" then the operation will be aborted. None of the inputs can be null. None of the quantities can be a negative number. If 0 steps or ingredients are entered the operation will be aborted and the user will be informed why. The user can enter quantities in the form of a word or in the form of a numeric value ("1"/"one").
 
 ## Displaying A Recipe
-If the user selects 2) from the main menu the prompts that will follow will guide the user through displaying an existing recipe. The programme will check if a recipe already exists in storage and if it does not the user will be informed of such and the operation will be aborted. If a recipe(s) do exist the user will be prompted to select whcih recipe must be displayed and then select the scale of the recipe's ingredients (1x, 2x, 3x, 0.5x). The user will have the option of resetting the scale after this.
+If the user selects 2) from the main menu the prompts that will follow will guide the user through displaying an existing recipe. The programme will check if a recipe already exists in storage and if it does not the user will be informed of such and the operation will be aborted. If a recipe(s) do exist the user will be prompted to select which recipe must be displayed and then select the scale of the recipe's ingredients (1x, 2x, 3x, 0.5x). The user will have the option of resetting the scale after this.
 
 ## Deleting A Recipe
-If the user selects 3) from the main menu the prompts that will follow will guide the user through deleting an existing recipe. The programme will check if a recipe exists in storage and if it does not the user will be informed of such and the operation will be aborted. If a recipe does exist in storage the user will be asked to confirm if they would like to delete the recipe. If the user confirms by replying with "yes"/"y" the recipe will be deleted. If they respond with "no"/"n" then the operation will be aborted. Any other input will be considered as invalid and will ask the user to confirm if they would like to delete the recipe again.
+If the user selects 3) from the main menu the prompts that will follow will guide the user through deleting an existing recipe. The programme will check if a recipe exists in storage and if it does not the user will be informed of such and the operation will be aborted. If a recipe does exist in storage the user will be asked to confirm if they would like to delete the recipe. If the user confirms by replying with "yes"/"y" the recipe will be deleted. If they respond with "no"/"n" then the operation will be aborted. Any other input will be considered invalid and will ask the user to confirm if they would like to delete the recipe again.
 
 ## Exiting The Programme
 If the user selects 4) from the main menu the programme will terminate.
