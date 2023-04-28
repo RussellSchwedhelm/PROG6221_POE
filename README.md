@@ -1,31 +1,54 @@
 # PROG6221_POE
 # Recipe Book Programme
 
-This programme is a console application that allows users to create, display, scale and delete recipes using C# programming. The programme also includes animations and error handling features. Furthermore the application allows the user to enter words or numbers, when quantities are concerned and they will be handled accordingly so that output is the same.
+This program is a console application that enables users to create, display, scale, and delete recipes using C# programming. The application provides a user-friendly interface that is easy to navigate, making it accessible to beginners and experienced programmers alike.
+
+Two interesting features of this program is the use of animations when displaying messages or prompts in the console. This not only makes the program more engaging and enjoyable to use, but also helps users stay informed about the program's progress. Additionally, this program has the ability to handle both words and numbers when quantities are concerned, allowing the user to enter, for example "one" or 1 and expect the same reaction and output from the programme. 
+
+The user can enter ingredients with different units of measurement, such as cups, tablespoons, or teaspoons, grams, kilograms or cutsom units and the program will handle them accordingly so that the output is consistent and accurate. It does this by automatic scaling of non-custom units. Such as converting grams to kilograms or tablespoons to cups.
+
+Additionally, error handling features have been integrated into the program to prevent crashes or unexpected behavior in case the user enters invalid input. For example, if the user enters a non-numeric value where a numeric value is expected, the program will display an error message and prompt the user to enter valid input.
 
 ## Getting Started
 
-To run this program, you will need a C# development environment such as Visual Studio. The program runs on .NET 7 framework.
+To run this program, you will need a C# development environment, such as Visual Studio, installed on your computer. If you don't have it installed, you can download it for free from the official Microsoft website:
 
-Once you have opened the project in your development environment, you can build and run the program to execute the Main method of the Program class.
+https://visualstudio.microsoft.com/downloads/
+
+After installing the development environment, follow these steps:
+
+1. Open Visual Studio and select "Open a project or solution" from the start menu. Navigate to the project directory and select the .sln file to open the project.
+
+2. Once the project is open in Visual Studio, select "Build" from the top menu bar, and then select "Build Solution". This will compile the code and create an executable file.
+
+3. If the build is successful, you can run the program by pressing the "Start" button in the toolbar or by pressing the F5 key on your keyboard. This will launch the program in debug mode.
+
+4. If you encounter any errors during the build or run process, check the output window for error messages. You can open the output window by selecting "View" from the top menu bar, then selecting "Output".
+
+It's important to note that the program runs on .NET 7 framework. If you don't have it installed on your computer, you'll need to download and install it before you can run the program. You can download the .NET 7 framework from the official Microsoft website:
+
+https://dotnet.microsoft.com/download/dotnet/7.0
+
+Once you have installed .NET 7, you should be able to build and run the program without any issues.
 
 ## Usage
 
-When you run the program, you will be prompted to select a function from a menu of options:
+When you run the program, you will be presented with a menu of options that you can select from by entering a number corresponding to the option you wish to choose. The menu options are as follows:
+
 1) Enter New Recipe
 2) Display Recipe
 3) Delete Recipe
 4) Exit
 
-If you select 1), you will begin the process of entering a new recipe
+To select an option, simply enter the number that corresponds to it and press "Enter" on your keyboard.
 
-If you select 2), you will begin the process of displaying a stored recipe
+If you select option 1, you will begin the process of entering a new recipe. The program will guide you through a series of prompts to input the nessesary information to create a new recipe.
 
-If you select 3), you will begin the process of deleting a stored recipe
+If you select option 2, you will begin the process of displaying a stored recipe. The program will guide you through a series of prompts to display a stored recipe.
 
-If you select 4), the program will exit.
+If you select option 3, you will begin the process of deleting a stored recipe. The program will guide you through a series of prompts to delete a stored recipe.
 
-The program also includes animations when displaying messages or prompts in the console. Additionally, error handling features are included to prevent crashes or unexpected behavior if invalid input is entered by the user.
+If you select option 4, the program will exit.
 
 ## Creating New Recipe
 If the user selects 1) from the main menu the prompts that will follow will guide the user through creating a new recipe. If there is a recipe stored, the user will be asked to delete that recipe or the operation will be aborted. If the user confirms by replying with "yes"/"y" the recipe will be deleted and the process of creating a new recipe will continue. If they respond with "no"/"n" then the operation will be aborted. None of the inputs can be null. None of the quantities can be a negtive number. If 0 steps or ingredients are entered the operation will be aborted and the user will be informed why. The user can enter quantities in the form of a word or in the form of a numeric value ("1"/"one").
