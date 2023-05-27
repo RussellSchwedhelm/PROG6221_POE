@@ -4,8 +4,8 @@ namespace PROG6221_POE
 {
     class Program
     {
-        //A list which stores created recipes
-        private List<Recipe> recipeList = new List<Recipe>();
+        //A dictionary which stores created recipes
+        Dictionary<string, Recipe> recipeList = new Dictionary<string, Recipe>(StringComparer.OrdinalIgnoreCase);
 
         ErrorControl errorControl = new ErrorControl();
         Animations animation = new Animations();
@@ -150,34 +150,6 @@ namespace PROG6221_POE
             string recipeName; //Used to store the user inputted recipe name
             int numIngredients = -1; //Used to store the user inputted number of ingredients
             int numSteps = -1; //Used to store the user inputted number of steps
-            int checkedUserInput; //Used to store result of a error control check
-
-            // Check if there is already a recipe in the storage
-            if (recipeList.Count() > 0)
-            {
-                // Print a message and prompt the user to continue or not
-                Console.WriteLine("A Recipe Is Already Present In Storage. To Add A New Recipe, Storage Must Be Cleared\n");
-                do
-                {
-                    Console.Write("Would You Like To Continue (Y/N): ");
-                    userInput = Console.ReadLine().ToLower();
-                    checkedUserInput = errorControl.CheckYesOrNo(userInput); //Checking if the user input is valid
-
-                    // Depending on the user's input result, perform an action
-                    switch (checkedUserInput)
-                    {
-                        case 1: //1 = yes
-                            recipeList.Clear();
-                            animation.PrintMessage("positive", "Recipe Deleted");
-                            break;
-                        case 2: //2 = no
-                            return;
-                        default: // 0 = Invalid Input
-                            break;
-                    }
-
-                } while (checkedUserInput == 0); //Repeat while invalid input
-            }
 
             // Declare a new recipe object
             Recipe newRecipe;
@@ -188,7 +160,7 @@ namespace PROG6221_POE
                 PrintTitle();
                 Console.Write("Please Enter The Name Of The New Recipe: ");
                 recipeName = Console.ReadLine();
-            } while (errorControl.CheckForNull(recipeName) == false);
+            } while (errorControl.CheckForNull(recipeName) == false && errorControl.CheckForRecipe(recipeName, recipeList) == true);
 
             // Prompt the user to enter the number of ingredients and check if it's a number
             do
@@ -231,12 +203,14 @@ namespace PROG6221_POE
             }
 
             // Create a new recipe object with the given name, number of ingredients and steps
-            newRecipe = new Recipe(recipeName, numIngredients, numSteps);
+            newRecipe = new Recipe();
 
             // Declare and initialize the variables for the ingredients
             string ingredientName;
             double ingredientQuantity = -1;
             string ingredientUnitOfMeasurement = "";
+            string ingredientFoodGroup = "";
+            int ingredientCalories = -1;
 
             // Loop through the ingredients and prompt the user to enter their name, unit of measurement and quantity
             for (int ingredient = 0; ingredient < numIngredients; ingredient++)
@@ -292,8 +266,35 @@ namespace PROG6221_POE
                     ingredientQuantity = errorControl.CheckForPositiveNumber(userInput);
                 } while (ingredientQuantity == -1);
 
+                Console.WriteLine();
+
+                do
+                {
+                    Console.Write("Please Enter The Amount Of Calories In \""
+                                  + ingredientName + "\": ");
+                    userInput = Console.ReadLine();
+                    ingredientCalories = (int) errorControl.CheckForPositiveNumber(userInput);
+                } while (ingredientCalories == -1);
+
+                Console.WriteLine();
+
+                do
+                {
+                    Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
+                    Console.Write("\n1) Fruits" +
+                                  "\n2) Vegitables" +
+                                  "\n3) Grains" +
+                                  "\n4) Protein" +
+                                  "\n5) Dairy" +
+                                  "\n6) Fats Or Oils");
+                    Console.Write("\n\nEnter Your Selection: ");
+
+                    userInput = Console.ReadLine();
+                    ingredientFoodGroup = errorControl.CheckSelectFoodGroup(userInput);
+                } while (ingredientFoodGroup.Equals("Invalid"));
+
                 newRecipe.addIngredient(ingredientName, ingredientUnitOfMeasurement,
-                                        ingredientQuantity);
+                                        ingredientQuantity, ingredientCalories, ingredientFoodGroup);
 
             }
 
@@ -302,7 +303,7 @@ namespace PROG6221_POE
                 string stepInfo; // Declare a string variable to hold the step information
 
                 PrintTitle(); // Call the PrintTitle method to display the program title
-                Console.WriteLine("Recipe: " + newRecipe.RecipeName); // Display the recipe name
+                Console.WriteLine("Recipe: " + recipeName); // Display the recipe name
                 Console.WriteLine(); // Add a blank line for spacing
 
                 // Prompt the user to enter step information until a non-null value is entered
@@ -316,8 +317,15 @@ namespace PROG6221_POE
             }
 
             //Add the recipe to the recipeList
-            recipeList.Add(newRecipe);
+            recipeList.Add(recipeName, newRecipe);
             animation.PrintMessage("positive", "Recipe Saved");
+
+            // sort the dictionary by key
+            var sortedDictionary = recipeList.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+
+            // replace the original dictionary with the sorted one
+            recipeList = sortedDictionary;
+
         }
 
         //----------------------------------------------------------------------------\\
@@ -333,6 +341,9 @@ namespace PROG6221_POE
             int recipeIndex = 0; // Index of the selected recipe in the recipeList
             double recipeScale = 0; // Scale factor of the selected recipe
             string userInput; // Variable for storing user's input
+            string recipeName = ""; // String used to store the name of a selected recipe
+            int convertedUserInput = -1; // Variable for storing user's input converted to an int
+            Recipe recipeToDisplay = recipeList.GetValueOrDefault("");
 
             // Check if there are any recipes saved.
             if (recipeList.Count == 0)
@@ -346,9 +357,10 @@ namespace PROG6221_POE
             Console.WriteLine("Please Select The Recipe You Want To Display:");
 
             // Display the list of recipes.
-            foreach (Recipe recipe in recipeList)
+
+            foreach (string key in recipeList.Keys)
             {
-                Console.WriteLine(recipeNum + ") " + recipe.RecipeName); // Display the recipe number and name
+                Console.WriteLine(recipeNum + ") " + key); // Display the recipe number and name
                 recipeNum++; // Increment the recipe number counter
             }
 
@@ -357,17 +369,47 @@ namespace PROG6221_POE
             // Get the user's recipe selection.
             do
             {
-                Console.Write("Enter Your Numeric Selection: ");
-                userInput = Console.ReadLine().ToLower(); // Read user's input from the console
+                Console.Write("Enter Your Selection: ");
+                userInput = Console.ReadLine(); // Read user's input from the console
+                convertedUserInput = (int) errorControl.CheckForPositiveNumber(userInput);
 
-                recipeIndex = (int)errorControl.CheckForPositiveNumber(userInput) - 1; // Convert user's input to integer and set it as the recipe index
-            } while (recipeIndex == -2 || errorControl.CheckForRecipe(userInput, recipeList.Count) == false); // Check if the input is valid
+                if (userInput.Equals(recipeList.Keys))
+                {
+                    recipeToDisplay = recipeList.GetValueOrDefault(userInput);
+                    foreach (KeyValuePair<string, Recipe> kvp in recipeList)
+                    {
+                        Console.Write(kvp.Key);
+                        if (userInput == kvp.Key)
+                        {
+                            recipeName = kvp.Key;
+                            break;
+                        }
+                        recipeNum++; // Increment the recipe number counter
+                    }
+                }
+
+                else if (convertedUserInput != -1)
+                {
+                    recipeNum = 1;
+
+                    foreach (KeyValuePair<string, Recipe> kvp in recipeList)
+                    {
+                        if (recipeNum == convertedUserInput)
+                        {
+                            recipeToDisplay = kvp.Value;
+                            recipeName = kvp.Key;
+                            break;
+                        }
+                        recipeNum++; // Increment the recipe number counter
+                    }
+                }
+            } while (recipeToDisplay == null); // Check if the input is valid
 
             // Loop for setting the scale of the selected recipe
             do
             {
                 PrintTitle();
-                Console.WriteLine("Recipe: " + recipeList[recipeIndex].RecipeName + "\n");
+                Console.WriteLine("Recipe: " + recipeName + "\n");
                 Console.WriteLine("Select Your Scale:" +
                                   "\n1) Default (1x)" +
                                   "\n2) Double (2x)" +
@@ -387,8 +429,23 @@ namespace PROG6221_POE
                 } while (recipeScale == 0); // Continue the loop if the recipe scale is not set
 
                 PrintTitle();
-                Console.WriteLine("Recipe: " + recipeList[recipeIndex].RecipeName + "\n");
-                Console.WriteLine(recipeList[recipeIndex].DisplayRecipe(recipeScale)); // Display the recipe with the selected scale
+                Console.WriteLine("Recipe: " + recipeName+ "\n");
+                Console.WriteLine(recipeToDisplay.DisplayRecipe(recipeScale)); // Display the recipe with the selected scale
+
+                if (recipeToDisplay.TotalCalories(recipeScale) > 300)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow; // set the console text color to dark yellow
+                    Console.Write("Caution! The Total Calories For This Recipe Are Over 300");
+                    Console.ResetColor(); // reset the console text color to the default
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green; // set the console text color to green
+                    Console.Write("The Total Calories For This Recipe Are Under Or Equal To 300");
+                    Console.ResetColor(); // reset the console text color to the default
+                }
+
+                Console.WriteLine();
 
                 // Prompt the user for the next action
                 Console.WriteLine("\nWould You Like To:" +

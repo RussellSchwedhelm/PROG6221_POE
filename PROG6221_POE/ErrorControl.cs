@@ -125,31 +125,31 @@ namespace PROG6221_POE
                 // If userInput is "1", "teaspoon", or "teaspoon(s)", return "Teaspoon(s)"
                 case "1":
                 case "teaspoon":
-                case "teaspoon(s)":
+                case "teaspoons":
                     return "Teaspoon(s)";
 
                 // If userInput is "2", "tablespoon", or "tablespoon(s)", return "Tablespoon(s)"
                 case "2":
                 case "tablespoon":
-                case "tablespoon(s)":
+                case "tablespoons":
                     return "Tablespoon(s)";
 
                 // If userInput is "3", "cup", or "cup(s)", return "Cup(s)"
                 case "3":
                 case "cup":
-                case "cup(s)":
+                case "cups":
                     return "Cup(s)";
 
                 // If userInput is "4", "gram", or "gram(s)", return "Gram(s)"
                 case "4":
                 case "gram":
-                case "gram(s)":
+                case "grams":
                     return "Gram(s)";
 
                 // If userInput is "5", "kilogram", or "kilogram(s)", return "Kilogram(s)"
                 case "5":
                 case "kilogram":
-                case "kilogram(s)":
+                case "kilograms":
                     return "Kilogram(s)";
 
                 // If userInput is "6", "custom unit", or "custom", return "Custom Unit"
@@ -224,23 +224,16 @@ namespace PROG6221_POE
         //----------------------------------------------------------------------------\\
         //This function parses an input recipe number, checks if it is less than or equal
         //to the number of available recipes, and returns a boolean value accordingly.
-        public bool CheckForRecipe(string recipeNum, int numRecipes)
+        public bool CheckForRecipe(string recipeName, Dictionary<string, Recipe> recipeList)
         {
-            // Parse the recipe number as an integer
-            int recipeIndex = int.Parse(recipeNum);
-
-            // Check if the recipe number is less than or equal to the number of recipes available
-            if (recipeIndex <= numRecipes)
+            foreach (KeyValuePair<string, Recipe> kvp in recipeList)
             {
-                return true;
+                if (recipeName.Equals(kvp.Key))
+                {
+                    return true;
+                }
             }
-            else
-            {
-                // Prompt the user that their entry is incorrect
-                IncorrectEntryPrompt();
-                // Return false as a default value
-                return false;
-            }
+            return false;
         }
 
         //Title: C# method to convert a word to a number (double)
@@ -259,6 +252,7 @@ namespace PROG6221_POE
         //This method converts an enetered word to a double
         double WordToDouble(string userInput)
         {
+            userInput = userInput.ToLower();
             // Define a dictionary of number words and their corresponding numeric values
             Dictionary<string, double> numberWords = new Dictionary<string, double>()
             {
@@ -317,6 +311,49 @@ namespace PROG6221_POE
             return totalValue;
         }
         //----------------------------------------------------------------------------\\
+        // Checks if the user's input is a valid food group selection and returns the
+        // corresponding food group as a string. If the input is not valid, it returns an empty string.
+        public string CheckSelectFoodGroup(string userInput)
+        {
+            switch (userInput.ToLower())
+            {
+                // If userInput is "1" or "fruits", return "Fruits"
+                case "1":
+                case "fruits":
+                    return "Fruits";
+
+                // If userInput is "2" or "vegetables", return "Vegetables"
+                case "2":
+                case "vegetables":
+                    return "Vegetables";
+
+                // If userInput is "3" or "grains", return "Grains"
+                case "3":
+                case "grains":
+                    return "Grains";
+
+                // If userInput is "4" or "protein", return "Protein"
+                case "4":
+                case "protein":
+                    return "Protein";
+
+                // If userInput is "5" or "dairy", return "Dairy"
+                case "5":
+                case "dairy":
+                    return "Dairy";
+
+                // If userInput is "6" or "fats or oils", return "Fats Or Oils"
+                case "6":
+                case "fats or oils":
+                    return "Fats Or Oils";
+
+                // If userInput is none of the above, call IncorrectEntryPrompt method and return "Invalid"
+                default:
+                    IncorrectEntryPrompt();
+                    return "Invalid";
+            }
+        }
+
     }
 }
 //----------------------------------------------------------------------------\\

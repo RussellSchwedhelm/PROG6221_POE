@@ -4,54 +4,23 @@ namespace PROG6221_POE
 {
     public class Recipe
     {
-        private Ingredient[] ingredientsList;
-        private string[] stepsList;
-        private string recipeName;
+        private List<Ingredient> ingredientsList = new List<Ingredient>();
+        private List<string> stepsList = new List<string>();
         //----------------------------------------------------------------------------\\
         //Getters And Setters
-        public string RecipeName { get => recipeName; set => recipeName = value; }
-        public Ingredient[] IngredientsList { get => ingredientsList; set => ingredientsList = value; }
-        public string[] StepsList { get => stepsList; set => stepsList = value; }
-
-        //----------------------------------------------------------------------------\\
-
-        public Recipe(string recipeName, int numIngredients, int numSteps)
-        {
-            // Create a new array of Ingredient objects with length numIngredients, and assign it to the IngredientsList field of the Recipe object
-            IngredientsList = new Ingredient[numIngredients];
-
-            // Create a new array of strings with length numSteps, and assign it to the StepsList field of the Recipe object
-            StepsList = new string[numSteps];
-
-            // Assign the value of recipeName to the RecipeName field of the Recipe object
-            this.RecipeName = recipeName;
-        }
-
-
+        public List<Ingredient> IngredientsList { get => ingredientsList; set => ingredientsList = value; }
+        public List<String> StepsList { get => stepsList; set => stepsList = value; }
         //----------------------------------------------------------------------------\\
         //This method adds an ingredient object to an array of ingredients
         public void addIngredient(string ingredientName, string unitOfMeasurement,
-                                  double ingredientQuantity)
+                                  double ingredientQuantity, int calories, string foodGroup)
         {
-            // Initialize a counter variable.
-            int index = 0;
-
             // Create an instance of the Ingredient class based on user-provided parameters.
             Ingredient ingredientToAdd = new Ingredient(ingredientName, unitOfMeasurement,
-                                                        ingredientQuantity);
+                                                        ingredientQuantity, calories, foodGroup);
 
-            // Search through the IngredientsList collection for an empty position.
-            // If found, increment 'index', until a null is encountered or end of collection is reached.
-            for (index = 0; index < IngredientsList.Count(); index++)
-            {
-                if (IngredientsList[index] == null)
-                {
-                    break;
-                }
-            }
-
-            // Add the newly created Ingredient object to IngredientsList at next available position. 
-            IngredientsList[index] = ingredientToAdd;
+            // Add the newly created Ingredient object to the Ingredients list
+            IngredientsList.Add(ingredientToAdd);
         }
 
         //----------------------------------------------------------------------------\\
@@ -59,20 +28,8 @@ namespace PROG6221_POE
         // This method adds a step to StepsList
         public void addStep(string step)
         {
-            int index = 0; // Initialize index variable with zero
-
-            // Loop through the StepsList
-            for (index = 0; index < StepsList.Count(); index++)
-            {
-                // If current item in list is null, exit loop
-                if (StepsList[index] == null)
-                {
-                    break;
-                }
-            }
-
-            // Place the new "step" in first empty location or at end of list 
-            StepsList[index] = step;
+            // Place the new "step" to the step list
+            StepsList.Add(step);
         }
 
         //----------------------------------------------------------------------------\\
@@ -83,6 +40,8 @@ namespace PROG6221_POE
             // Initialize strings to store the ingredients and steps
             string ingredientsToString = "Ingredients:";
             string stepsToString = "Steps:";
+            string calories = "Recipe Calories: ";
+            double totalCalories = 0;
 
             // Initialize a counter for the steps
             int stepCount = 1;
@@ -92,21 +51,26 @@ namespace PROG6221_POE
             {
                 // Append the correct quantity and measurement for the scaled ingredient to the string
                 ingredientsToString += "\n" + CorrectQuantityAndMeasurement(scale, ingredient.Quantity, ingredient.UnitOfMeasurement)
-                    + " " + ingredient.Name;
+                    + " " + ingredient.Name + " [Food Group: " + ingredient.FoodGroup + "]";
+                totalCalories += ingredient.Calories;
             }
+
+            totalCalories *= scale;
 
             // Iterate over the list of steps
             foreach (string step in StepsList)
             {
                 // Append the step number and text to the string
-                stepsToString += "\n" + stepCount + ". " + stepsList[stepCount - 1];
+                stepsToString += "\n" + stepCount + ". " + stepsList.ElementAt(stepCount - 1);
 
                 // Increment the step counter
                 stepCount++;
             }
 
+            calories += totalCalories;
+
             // Combine the strings for ingredients and steps
-            string recipe = ingredientsToString + "\n\n" + stepsToString;
+            string recipe = ingredientsToString + "\n\n" + stepsToString + "\n\n" + calories;
 
             // Return the combined recipe string
             return recipe;
@@ -269,6 +233,18 @@ namespace PROG6221_POE
                 return correctQuantityAndMeasurement;
             }
         }
+    //----------------------------------------------------------------------------\\
+        public double TotalCalories(double recipeScale)
+        {
+            double totalCalories = 0;
+
+            foreach (Ingredient ingredient in IngredientsList)
+            {
+                totalCalories += ingredient.Calories;
+            }
+            return totalCalories * recipeScale;
+        }
+
     }
 
     //----------------------------------------------------------------------------\\
