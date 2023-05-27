@@ -3,11 +3,8 @@
 using System;
 namespace PROG6221_POE
 {
-	public class Animations
-	{
-		public Animations()
-		{
-		}
+    public class Animations
+    {
         public void PrintMessage(string messageType, string message)
         {
             // create a new instance of the Program class
@@ -46,7 +43,7 @@ namespace PROG6221_POE
             }
             Thread.Sleep(400);
         }
-        //----------------------------------------------------------------------------\\
     }
+        //----------------------------------------------------------------------------\\
 }
 //----------------------------------------------------------------------------\\

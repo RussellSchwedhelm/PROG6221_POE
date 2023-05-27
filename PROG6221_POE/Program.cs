@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics.Metrics;
+using System.Drawing;
 
 namespace PROG6221_POE
 {
@@ -17,10 +18,11 @@ namespace PROG6221_POE
             // Call the Menu method of the run instance.
             run.Menu();
         }
-
         //----------------------------------------------------------------------------\\
         /* This method clears the console, resets the console colours to their defaults,
         and prints the programme title and a separator. */
+        // The ASCII text art used in this code is obtained from the website:
+        // https://patorjk.com/software/taag/#p=display&h=2&f=Doom&t=RECIPE%20BOOK
         public void PrintTitle()
         {
             // Clear the console.
@@ -30,13 +32,17 @@ namespace PROG6221_POE
             Console.ResetColor();
 
             // Print the programme title.
-            Console.WriteLine("RECIPE BOOK PROGRAMME");
+            Console.WriteLine("______ _____ _____ ___________ _____  ______ ___" +
+                "__ _____ _   __\n| ___ \\  ___/  __ \\_   _| ___ \\  ___| | ___" +
+                " \\  _  |  _  | | / /\n| |_/ / |__ | /  \\/ | | | |_/ / |__   |" +
+                " |_/ / | | | | | | |/ / \n|    /|  __|| |     | | |  __/|  __|" +
+                "  | ___ \\ | | | | | |    \\ \n| |\\ \\| |___| \\__/\\_| |_| | " +
+                "  | |___  | |_/ | \\_/ | \\_/ / |\\  \\\n\\_| \\_\\____/ \\___" +
+                "_/\\___/\\_|   \\____/  \\____/ \\___/ \\___/\\_| \\_/");
 
             // Print a line to separate the title.
-            Console.WriteLine("---------------------");
+            Console.WriteLine("---------------------------------------------------------------");
         }
-
-
         //----------------------------------------------------------------------------\\
         //This method displays a main menu and calls the appropriate method based on user selection
         public void Menu()
@@ -48,7 +54,8 @@ namespace PROG6221_POE
             Console.WriteLine("1) Enter New Recipe" +
                               "\n2) Display Recipe" +
                               "\n3) Delete Recipe" +
-                              "\n4) Exit");
+                              "\n4) Display Food Group Info" +
+                              "\n5) Exit");
             Console.Write("\nEnter Your Numeric Selection: ");
 
             // Attempt to parse the user's menu selection as an integer.
@@ -77,6 +84,9 @@ namespace PROG6221_POE
                     DeleteRecipe();
                     break;
                 case 4:
+                    DisplayFoodGroupInfo();
+                    break;
+                case 5:
                     // If the user selects option 4, exit the programme.
                     Console.Clear();
                     Environment.Exit(0);
@@ -144,7 +154,7 @@ namespace PROG6221_POE
                     convertedUserInput = (int)errorControl.CheckForPositiveNumber(userInput);
                     if (convertedUserInput > 0 && convertedUserInput <= recipeNum)
                     {
-                        recipeName = recipeList.ElementAt(convertedUserInput).Key;
+                        recipeName = recipeList.ElementAt(convertedUserInput - 1).Key;
                     }
                 }
             } while (recipeName == ""); // Check if the input is valid
@@ -315,7 +325,7 @@ namespace PROG6221_POE
                 {
                     Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
                     Console.Write("\n1) Fruits" +
-                                  "\n2) Vegitables" +
+                                  "\n2) Vegetables" +
                                   "\n3) Grains" +
                                   "\n4) Protein" +
                                   "\n5) Dairy" +
@@ -412,7 +422,7 @@ namespace PROG6221_POE
                     convertedUserInput = (int)errorControl.CheckForPositiveNumber(userInput);
                     if (convertedUserInput > 0 && convertedUserInput <= recipeNum)
                     {
-                        recipeName = recipeList.ElementAt(convertedUserInput).Key;
+                        recipeName = recipeList.ElementAt(convertedUserInput - 1).Key;
                     }
                 }
             } while (errorControl.CheckForNull(recipeName) == false); // Check if the input is valid
@@ -494,6 +504,44 @@ namespace PROG6221_POE
 
         }
         //----------------------------------------------------------------------------\\
+        // The information on the traditional food groups was provided by ChatGPT, an AI language model developed by OpenAI.
+        // For more detailed information, please consult reliable nutrition sources or consult a healthcare professional.
+        public void DisplayFoodGroupInfo()
+        {
+            string fruits = "Fruits: Sweet and refreshing plant-based foods that provide essential vitamins, minerals, fiber, and antioxidants. Examples include apples, oranges, berries, and melons.";
+            string vegetables = "Vegetables: Nourishing and diverse plant-based foods that offer a wide range of vitamins, minerals, fiber, and beneficial plant compounds. Examples include leafy greens, broccoli, carrots, and peppers.";
+            string grains = "Grains: Staple foods made from cereal crops such as wheat, rice, oats, and corn. Grains are a significant source of carbohydrates, fiber, and various nutrients like B vitamins and minerals. Examples include bread, rice, pasta, and cereals.";
+            string protein = "Protein: Foods that are rich in protein, necessary for building and repairing body tissues. This group includes animal sources like meat, poultry, fish, eggs, and dairy, as well as plant-based sources like legumes (beans, lentils), tofu, nuts, and seeds.";
+            string dairy = "Dairy: Dairy products, such as milk, cheese, and yogurt, are excellent sources of calcium, protein, and other essential nutrients. Dairy provides bone-strengthening minerals and can be part of a healthy diet. Plant-based alternatives like soy or almond milk are also available for those who avoid dairy.";
+            string fatsAndOils = "Fats or Oils: This group includes fats and oils that provide energy and essential fatty acids. While it's important to consume them in moderation, healthy fats from sources like avocados, nuts, seeds, and olive oil can be part of a balanced diet.";
+            string[] foodGroups = { fruits, vegetables, grains, protein, dairy, fatsAndOils };
+            string[] info;
+            int limit = 0;
+            PrintTitle();
+
+            Console.WriteLine("Here Is Information About The Food Groups Which Encompass All Ingredients:\n");
+
+            for (int group = 0; group < 6; group++)
+            {
+                info = foodGroups[group].Split(' ', '-');
+
+                foreach (string word in info)
+                {
+                    if (limit + word.Length > 75)
+                    {
+                        Console.WriteLine();
+                        limit = 0;
+                    }
+
+                    Console.Write(word + ' ');
+                    limit += word.Length + 1;
+                }
+                Console.WriteLine("\n");
+            }
+
+            Console.Write("\n\nPress 'Enter' To Return To Menu...");
+            Console.ReadLine();
+        }
     }
 }
 //----------------------------------------------------------------------------\\
