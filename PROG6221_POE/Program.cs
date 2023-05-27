@@ -5,7 +5,7 @@ namespace PROG6221_POE
     class Program
     {
         //A dictionary which stores created recipes
-        Dictionary<string, Recipe> recipeList = new Dictionary<string, Recipe>(StringComparer.OrdinalIgnoreCase);
+        SortedDictionary<string, Recipe> recipeList = new SortedDictionary<string, Recipe>(StringComparer.OrdinalIgnoreCase);
 
         ErrorControl errorControl = new ErrorControl();
         Animations animation = new Animations();
@@ -105,7 +105,11 @@ namespace PROG6221_POE
 
             // Initialize variables for user input
             string userInput;
+            int convertedUserInput;
             int checkedUserInput;
+            int recipeNum = 1;
+            Recipe recipeToDisplay = null;
+            string recipeName = "";
 
             // Check if there are any saved recipes
             if (recipeList.Count == 0)
@@ -115,13 +119,43 @@ namespace PROG6221_POE
                 return;
             }
 
+            Console.Write("Select The Recipe You Would Like To Delete: \n");
+            foreach (string key in recipeList.Keys)
+            {
+                Console.WriteLine(recipeNum + ") " + key); // Display the recipe number and name
+                recipeNum++; // Increment the recipe number counter
+            }
+            Console.Write(recipeNum + ") Abort Delete\n\n");
+
+            do
+            {
+                Console.Write("Enter Your Selection: ");
+                userInput = Console.ReadLine(); // Read user's input from the console
+                if (recipeList.Keys.Any(key => key.Equals(userInput, StringComparison.OrdinalIgnoreCase)))
+                {
+                    recipeName = recipeList.FirstOrDefault(pair => pair.Key.Equals(userInput, StringComparison.OrdinalIgnoreCase)).Key;
+                }
+                else if (userInput.ToLower().Equals("abort delete") || "6)".Contains(userInput))
+                {
+                    return;
+                }
+                else
+                {
+                    convertedUserInput = (int)errorControl.CheckForPositiveNumber(userInput);
+                    if (convertedUserInput > 0 && convertedUserInput <= recipeNum)
+                    {
+                        recipeName = recipeList.ElementAt(convertedUserInput).Key;
+                    }
+                }
+            } while (recipeName == ""); // Check if the input is valid
+
             do
             {
                 // Print the title of the recipe book
                 PrintTitle();
 
                 // Prompt the user for confirmation to delete the saved recipe
-                Console.Write("Are You Sure You Want To Delete The Saved Recipe (Y/N): ");
+                Console.Write("Are You Sure You Want To Delete \"" + recipeName + "\" (Y/N): ");
                 userInput = Console.ReadLine().ToLower();
 
                 checkedUserInput = errorControl.CheckYesOrNo(userInput);
@@ -129,8 +163,7 @@ namespace PROG6221_POE
                 switch (checkedUserInput)
                 {
                     case 1:
-                        // Delete the saved recipe and display a success message
-                        recipeList.Clear();
+                        recipeList.Remove(recipeName);
                         animation.PrintMessage("positive", "Recipe Deleted");
                         break;
                     default:
@@ -160,7 +193,7 @@ namespace PROG6221_POE
                 PrintTitle();
                 Console.Write("Please Enter The Name Of The New Recipe: ");
                 recipeName = Console.ReadLine();
-            } while (errorControl.CheckForNull(recipeName) == false && errorControl.CheckForRecipe(recipeName, recipeList) == true);
+            } while (errorControl.CheckForNull(recipeName) == false && errorControl.CheckForRecipe(recipeName, recipeList) == false);
 
             // Prompt the user to enter the number of ingredients and check if it's a number
             do
@@ -320,12 +353,6 @@ namespace PROG6221_POE
             recipeList.Add(recipeName, newRecipe);
             animation.PrintMessage("positive", "Recipe Saved");
 
-            // sort the dictionary by key
-            var sortedDictionary = recipeList.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-
-            // replace the original dictionary with the sorted one
-            recipeList = sortedDictionary;
-
         }
 
         //----------------------------------------------------------------------------\\
@@ -371,39 +398,26 @@ namespace PROG6221_POE
             {
                 Console.Write("Enter Your Selection: ");
                 userInput = Console.ReadLine(); // Read user's input from the console
-                convertedUserInput = (int) errorControl.CheckForPositiveNumber(userInput);
-
-                if (userInput.Equals(recipeList.Keys))
+                if (recipeList.Keys.Any(key => key.Equals(userInput, StringComparison.OrdinalIgnoreCase)))
                 {
-                    recipeToDisplay = recipeList.GetValueOrDefault(userInput);
-                    foreach (KeyValuePair<string, Recipe> kvp in recipeList)
-                    {
-                        Console.Write(kvp.Key);
-                        if (userInput == kvp.Key)
-                        {
-                            recipeName = kvp.Key;
-                            break;
-                        }
-                        recipeNum++; // Increment the recipe number counter
-                    }
+                    recipeName = recipeList.FirstOrDefault(pair => pair.Key.Equals(userInput, StringComparison.OrdinalIgnoreCase)).Key;
                 }
 
-                else if (convertedUserInput != -1)
+                else if (userInput.ToLower().Equals("abort delete") || "6)".Contains(userInput))
                 {
-                    recipeNum = 1;
-
-                    foreach (KeyValuePair<string, Recipe> kvp in recipeList)
+                    return;
+                }
+                else
+                {
+                    convertedUserInput = (int)errorControl.CheckForPositiveNumber(userInput);
+                    if (convertedUserInput > 0 && convertedUserInput <= recipeNum)
                     {
-                        if (recipeNum == convertedUserInput)
-                        {
-                            recipeToDisplay = kvp.Value;
-                            recipeName = kvp.Key;
-                            break;
-                        }
-                        recipeNum++; // Increment the recipe number counter
+                        recipeName = recipeList.ElementAt(convertedUserInput).Key;
                     }
                 }
-            } while (recipeToDisplay == null); // Check if the input is valid
+            } while (errorControl.CheckForNull(recipeName) == false); // Check if the input is valid
+
+            recipeToDisplay = recipeList.GetValueOrDefault(recipeName);
 
             // Loop for setting the scale of the selected recipe
             do

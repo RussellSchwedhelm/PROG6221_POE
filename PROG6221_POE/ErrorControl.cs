@@ -224,7 +224,7 @@ namespace PROG6221_POE
         //----------------------------------------------------------------------------\\
         //This function parses an input recipe number, checks if it is less than or equal
         //to the number of available recipes, and returns a boolean value accordingly.
-        public bool CheckForRecipe(string recipeName, Dictionary<string, Recipe> recipeList)
+        public bool CheckForRecipe(string recipeName, SortedDictionary<string, Recipe> recipeList)
         {
             foreach (KeyValuePair<string, Recipe> kvp in recipeList)
             {
