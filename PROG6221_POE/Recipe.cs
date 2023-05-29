@@ -1,4 +1,5 @@
 ﻿using System;
+public delegate void RecipeActions(double input);
 
 namespace PROG6221_POE
 {
@@ -22,7 +23,6 @@ namespace PROG6221_POE
             // Add the newly created Ingredient object to the Ingredients list
             IngredientsList.Add(ingredientToAdd);
         }
-
         //----------------------------------------------------------------------------\\
 
         // This method adds a step to StepsList
@@ -245,6 +245,42 @@ namespace PROG6221_POE
             return totalCalories * recipeScale;
         }
 
+        // This method provides calorie information based on the total calorie count of a meal.
+        // It returns a string describing the energy content of the meal, categorized into four levels:
+        // - Very low in energy content for meals with less than 75 calories.
+        // - Relatively low in calories for meals between 75 and 150 calories.
+        // - Slightly more substantial in energy content for meals between 150 and 300 calories.
+        // - Significant in terms of energy content for meals with 300 or more calories.
+        // The method also sets the console text color based on the calorie level for visual distinction.
+        public void GetCalorieInformation(double totalCalories)
+        {
+            string low = " calories is considered very low in energy content, providing minimal fuel for the body";
+            string medium = " calories, a meal remains relatively low in calories, offering a modest amount of energy";
+            string mediumHigh = " calories provides a slightly more substantial energy content, offering a bit more fuel for the body";
+            string high = " calories is considered significant in terms of energy content, providing a more substantial amount of fuel for the body";
+
+            if (totalCalories < 75) // If total calories is less than 75
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow; // Set console text color to dark yellow
+                Console.Write("[" + totalCalories + low + "]"); // Return the low calorie information
+            }
+            else if (totalCalories >= 75 && totalCalories < 150) // If total calories is between 75 and 150
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow; // Set console text color to yellow
+                Console.Write("[" + totalCalories + medium + "]");
+            }
+            else if (totalCalories >= 150 && totalCalories < 300) // If total calories is between 150 and 300
+            {
+                Console.ForegroundColor = ConsoleColor.Green; // Set console text color to green
+                Console.Write("[" + totalCalories + mediumHigh + "]");
+            }
+            else // For any other total calorie values
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow; // Set console text color to dark yellow
+                Console.Write("[" + totalCalories + high + "]");
+            }
+            Console.ResetColor();
+        }
     }
 
     //----------------------------------------------------------------------------\\

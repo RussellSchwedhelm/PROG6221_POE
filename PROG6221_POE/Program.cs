@@ -5,11 +5,18 @@ namespace PROG6221_POE
 {
     class Program
     {
+        private delegate void MenuAction();
         //A dictionary which stores created recipes
         SortedDictionary<string, Recipe> recipeList = new SortedDictionary<string, Recipe>(StringComparer.OrdinalIgnoreCase);
-
         ErrorControl errorControl = new ErrorControl();
         Animations animation = new Animations();
+
+        private MenuAction[] menuActions;
+
+        public Program()
+        {
+            InitializeMenuActions();
+        }
         //----------------------------------------------------------------------------\\
         static void Main(string[] args)
         {
@@ -43,64 +50,54 @@ namespace PROG6221_POE
             // Print a line to separate the title.
             Console.WriteLine("---------------------------------------------------------------");
         }
+
+        private void InitializeMenuActions()
+        {
+            menuActions = new MenuAction[]
+            {
+                CreateRecipe,
+                DisplayRecipeAction,
+                DeleteRecipe,
+                DisplayFoodGroupInfo,
+                ExitProgram
+            };
+        }
+
         //----------------------------------------------------------------------------\\
         //This method displays a main menu and calls the appropriate method based on user selection
         public void Menu()
         {
+            string userInput = "";
             int menuSelection = 0;
 
-            // Print the programme title and menu options.
-            PrintTitle();
-            Console.WriteLine("1) Enter New Recipe" +
-                              "\n2) Display Recipe" +
-                              "\n3) Delete Recipe" +
-                              "\n4) Display Food Group Info" +
-                              "\n5) Exit");
-            Console.Write("\nEnter Your Numeric Selection: ");
-
-            // Attempt to parse the user's menu selection as an integer.
-            try
+            while (true)
             {
-                menuSelection = int.Parse(Console.ReadLine());
-            }
-            catch
-            {
-            }
-
-            // Execute the appropriate action based on the user's selection.
-            switch (menuSelection)
-            {
-                case 1:
-                    // If the user selects option 1, create a new recipe.
+                do
+                {
+                    // Print the programme title and menu options.
                     PrintTitle();
-                    CreateRecipe();
-                    break;
-                case 2:
-                    // If the user selects option 2, display a recipe.
-                    DisplayRecipeAction();
-                    break;
-                case 3:
-                    // If the user selects option 3, delete a recipe.
-                    DeleteRecipe();
-                    break;
-                case 4:
-                    DisplayFoodGroupInfo();
-                    break;
-                case 5:
-                    // If the user selects option 4, exit the programme.
-                    Console.Clear();
-                    Environment.Exit(0);
-                    break;
-                default:
-                    // If the user enters an invalid selection, prompt them to try again.
-                    errorControl.IncorrectEntryPrompt();
-                    Console.Clear();
-                    Menu();
-                    break;
-            }
+                    Console.WriteLine("1) Enter New Recipe" +
+                                      "\n2) Display Recipe" +
+                                      "\n3) Delete Recipe" +
+                                      "\n4) Display Food Group Info" +
+                                      "\n5) Exit");
+                    Console.Write("\nEnter Your Numeric Selection: ");
+                    userInput = Console.ReadLine();
+                } while (errorControl.CheckForPositiveNumber(userInput) == -1);
 
-            // After the selected action is executed, the menu displays again.
-            Menu();
+                // Parsing the user's menu selection as an integer.
+                menuSelection = int.Parse(userInput);
+
+                if (menuSelection >= 1 && menuSelection <= menuActions.Length)
+                {
+                    MenuAction selectedAction = menuActions[menuSelection - 1];
+                    selectedAction();
+                }
+                else
+                {
+                    errorControl.IncorrectEntryPrompt();
+                }
+            }
         }
 
         //----------------------------------------------------------------------------\\
@@ -203,7 +200,7 @@ namespace PROG6221_POE
                 PrintTitle();
                 Console.Write("Please Enter The Name Of The New Recipe: ");
                 recipeName = Console.ReadLine();
-            } while (errorControl.CheckForNull(recipeName) == false && errorControl.CheckForRecipe(recipeName, recipeList) == false);
+            } while (errorControl.CheckForNull(recipeName) == false || errorControl.CheckForRecipe(recipeName, recipeList) == true);
 
             // Prompt the user to enter the number of ingredients and check if it's a number
             do
@@ -375,11 +372,11 @@ namespace PROG6221_POE
 
             // Initialise variables for recipe selection and scale.
             int recipeNum = 1; // Counter for displaying recipe number
-            int recipeIndex = 0; // Index of the selected recipe in the recipeList
             double recipeScale = 0; // Scale factor of the selected recipe
             string userInput; // Variable for storing user's input
             string recipeName = ""; // String used to store the name of a selected recipe
             int convertedUserInput = -1; // Variable for storing user's input converted to an int
+            double totalCalories = 0;
             Recipe recipeToDisplay = recipeList.GetValueOrDefault("");
 
             // Check if there are any recipes saved.
@@ -428,6 +425,7 @@ namespace PROG6221_POE
             } while (errorControl.CheckForNull(recipeName) == false); // Check if the input is valid
 
             recipeToDisplay = recipeList.GetValueOrDefault(recipeName);
+            RecipeActions getInfo = new RecipeActions(recipeToDisplay.GetCalorieInformation);
 
             // Loop for setting the scale of the selected recipe
             do
@@ -456,19 +454,9 @@ namespace PROG6221_POE
                 Console.WriteLine("Recipe: " + recipeName + "\n");
                 Console.WriteLine(recipeToDisplay.DisplayRecipe(recipeScale)); // Display the recipe with the selected scale
 
-                if (recipeToDisplay.TotalCalories(recipeScale) > 300)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow; // set the console text color to dark yellow
-                    Console.Write("Caution! The Total Calories For This Recipe Are Over 300");
-                    Console.ResetColor(); // reset the console text color to the default
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Green; // set the console text color to green
-                    Console.Write("The Total Calories For This Recipe Are Under Or Equal To 300");
-                    Console.ResetColor(); // reset the console text color to the default
-                }
+                totalCalories = recipeToDisplay.TotalCalories(recipeScale);
 
+                getInfo(totalCalories);
                 Console.WriteLine();
 
                 // Prompt the user for the next action
@@ -556,6 +544,11 @@ namespace PROG6221_POE
             Console.Write("\nPress 'Enter' To Return To Menu...");
             Console.ReadLine();
         }
+
+        public void ExitProgram()
+        {
+            Environment.Exit(0);
+        }
     }
-    }
+}
 //----------------------------------------------------------------------------\\

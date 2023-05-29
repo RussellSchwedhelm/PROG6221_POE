@@ -226,14 +226,24 @@ namespace PROG6221_POE
         //to the number of available recipes, and returns a boolean value accordingly.
         public bool CheckForRecipe(string recipeName, SortedDictionary<string, Recipe> recipeList)
         {
-            foreach (KeyValuePair<string, Recipe> kvp in recipeList)
+            if (recipeList.Count == 0)
             {
-                if (recipeName.Equals(kvp.Key))
+                return false;
+            }
+            else
+            {
+                string[] keyList = recipeList.Keys.ToArray();
+                if (keyList.Contains(recipeName))
                 {
+                    Animations animaiton = new Animations();
+                    animaiton.PrintMessage("negative", "Recipe Already Exists");
                     return true;
                 }
+                else
+                {
+                    return false;
+                }
             }
-            return false;
         }
 
         //Title: C# method to convert a word to a number (double)
