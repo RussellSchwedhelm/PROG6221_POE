@@ -67,39 +67,41 @@ namespace PROG6221_POE
         //This method displays a main menu and calls the appropriate method based on user selection
         public void Menu()
         {
-            string userInput = "";
-            int menuSelection = 0;
+            string userInput = ""; // Variable to store user input
+            int menuSelection = 0; // Variable to store the selected menu option
 
             while (true)
             {
                 do
                 {
-                    // Print the programme title and menu options.
-                    PrintTitle();
-                    Console.WriteLine("1) Enter New Recipe" +
-                                      "\n2) Display Recipe" +
-                                      "\n3) Delete Recipe" +
-                                      "\n4) Display Food Group Info" +
-                                      "\n5) Exit");
-                    Console.Write("\nEnter Your Numeric Selection: ");
-                    userInput = Console.ReadLine();
-                } while (errorControl.CheckForPositiveNumber(userInput) == -1);
+                    // Print the program title and menu options.
+                    Console.WriteLine("=== Recipe Manager ===");
+                    Console.WriteLine("1) Enter New Recipe");
+                    Console.WriteLine("2) Display Recipe");
+                    Console.WriteLine("3) Delete Recipe");
+                    Console.WriteLine("4) Display Food Group Info");
+                    Console.WriteLine("5) Exit");
+                    Console.Write("Enter Your Numeric Selection: ");
+
+                    userInput = Console.ReadLine(); // Read user input from the console
+
+                } while (errorControl.CheckForPositiveNumber(userInput) == -1); // Repeat the loop until a valid numeric input is entered
 
                 // Parsing the user's menu selection as an integer.
                 menuSelection = int.Parse(userInput);
 
                 if (menuSelection >= 1 && menuSelection <= menuActions.Length)
                 {
+                    // Get the selected action based on the menu selection
                     MenuAction selectedAction = menuActions[menuSelection - 1];
-                    selectedAction();
+                    selectedAction(); // Execute the selected action
                 }
                 else
                 {
-                    errorControl.IncorrectEntryPrompt();
+                    errorControl.IncorrectEntryPrompt(); // Display an error prompt for an invalid menu selection
                 }
             }
         }
-
         //----------------------------------------------------------------------------\\
         /*
         Deletes a recipe from the list of saved recipes, after prompting the user for confirmation.
@@ -111,12 +113,12 @@ namespace PROG6221_POE
             PrintTitle();
 
             // Initialize variables for user input
-            string userInput;
-            int convertedUserInput;
-            int checkedUserInput;
-            int recipeNum = 1;
-            Recipe recipeToDisplay = null;
-            string recipeName = "";
+            string userInput; // Stores user input
+            int convertedUserInput; // Stores the converted user input as an integer
+            int checkedUserInput; // Stores the checked user input (1 for Yes, 2 for No, 0 for invalid input)
+            int recipeNum = 1; // Counter for displaying recipe numbers
+            Recipe recipeToDisplay = null; // Stores the recipe to be displayed
+            string recipeName = ""; // Stores the name of the selected recipe
 
             // Check if there are any saved recipes
             if (recipeList.Count == 0)
@@ -127,6 +129,8 @@ namespace PROG6221_POE
             }
 
             Console.Write("Select The Recipe You Would Like To Delete: \n");
+
+            // Display the list of recipe numbers and names
             foreach (string key in recipeList.Keys)
             {
                 Console.WriteLine(recipeNum + ") " + key); // Display the recipe number and name
@@ -138,23 +142,27 @@ namespace PROG6221_POE
             {
                 Console.Write("Enter Your Selection: ");
                 userInput = Console.ReadLine(); // Read user's input from the console
+
                 if (recipeList.Keys.Any(key => key.Equals(userInput, StringComparison.OrdinalIgnoreCase)))
                 {
+                    // Retrieve the recipe name based on the user input (case-insensitive)
                     recipeName = recipeList.FirstOrDefault(pair => pair.Key.Equals(userInput, StringComparison.OrdinalIgnoreCase)).Key;
                 }
                 else if (userInput.ToLower().Equals("abort delete") || "6)".Contains(userInput))
                 {
-                    return;
+                    return; // User chooses to abort the delete operation
                 }
                 else
                 {
                     convertedUserInput = (int)errorControl.CheckForPositiveNumber(userInput);
+
                     if (convertedUserInput > 0 && convertedUserInput <= recipeNum)
                     {
+                        // Retrieve the recipe name based on the converted user input
                         recipeName = recipeList.ElementAt(convertedUserInput - 1).Key;
                     }
                 }
-            } while (recipeName == ""); // Check if the input is valid
+            } while (recipeName == ""); // Repeat if the input is invalid
 
             do
             {
@@ -170,26 +178,28 @@ namespace PROG6221_POE
                 switch (checkedUserInput)
                 {
                     case 1:
-                        recipeList.Remove(recipeName);
+                        recipeList.Remove(recipeName); // Remove the recipe from the recipe list
                         animation.PrintMessage("positive", "Recipe Deleted");
                         break;
                     default:
                         break;
                 }
-                //Repeat if incorrect input was entered
+
+                // Repeat if incorrect input was entered
             } while (checkedUserInput == 0);
         }
+
 
         //----------------------------------------------------------------------------\\
         /*This method takes the user through the process of creating a new 
          * recipe, choosing its' unit of measurement and deleting any already existing recipes */
         public void CreateRecipe()
         {
-            //Declaring variables
-            string userInput; //Used to take user input from the console
-            string recipeName; //Used to store the user inputted recipe name
-            int numIngredients = -1; //Used to store the user inputted number of ingredients
-            int numSteps = -1; //Used to store the user inputted number of steps
+            // Declaring variables
+            string userInput; // Used to take user input from the console
+            string recipeName; // Used to store the user inputted recipe name
+            int numIngredients = -1; // Used to store the user inputted number of ingredients
+            int numSteps = -1; // Used to store the user inputted number of steps
 
             // Declare a new recipe object
             Recipe newRecipe;
@@ -242,33 +252,32 @@ namespace PROG6221_POE
                 return;
             }
 
-            // Create a new recipe object with the given name, number of ingredients and steps
+            // Create a new recipe object with the given name, number of ingredients, and steps
             newRecipe = new Recipe();
 
-            // Declare and initialize the variables for the ingredients
+            // Declare and initialize variables for the ingredients
             string ingredientName;
             double ingredientQuantity = -1;
             string ingredientUnitOfMeasurement = "";
             string ingredientFoodGroup = "";
             int ingredientCalories = -1;
 
-            // Loop through the ingredients and prompt the user to enter their name, unit of measurement and quantity
+            // Loop through the ingredients and prompt the user to enter their name, unit of measurement, and quantity
             for (int ingredient = 0; ingredient < numIngredients; ingredient++)
             {
-                // Do this whule the user input is null
+                // Prompt the user to enter the name of the ingredient until a non-null value is entered
                 do
                 {
                     PrintTitle();
                     Console.WriteLine("Recipe: " + recipeName);
-                    Console.Write("\nPlease Enter The Name Of The Ingrediant: ");
+                    Console.Write("\nPlease Enter The Name Of The Ingredient: ");
                     ingredientName = Console.ReadLine();
                 } while (errorControl.CheckForNull(ingredientName) == false);
 
                 Console.WriteLine();
 
-
-                Console.Write("Please Select The Unit Of Measurement For \""
-                          + ingredientName + "\": ");
+                // Prompt the user to select the unit of measurement for the ingredient
+                Console.Write("Please Select The Unit Of Measurement For \"" + ingredientName + "\": ");
                 Console.WriteLine("\n1) Teaspoon(s)" +
                                   "\n2) Tablespoon(s)" +
                                   "\n3) Cup(s)" +
@@ -287,7 +296,7 @@ namespace PROG6221_POE
 
                 } while (ingredientUnitOfMeasurement.Equals("Invalid"));
 
-                //If the user chose option 6 above
+                // If the user chose option 6 above
                 if (ingredientUnitOfMeasurement == "Custom Unit")
                 {
                     ingredientUnitOfMeasurement = SetCustomScale();
@@ -295,29 +304,29 @@ namespace PROG6221_POE
 
                 Console.WriteLine();
 
-                //Do this while the user input is not a valid number. ie. < 0
+                // Prompt the user to enter the quantity for the ingredient until a valid number is entered
                 do
                 {
-                    Console.Write("Please Enter The Quantity For \""
-                                  + ingredientName + "\": ");
+                    Console.Write("Please Enter The Quantity For \"" + ingredientName + "\": ");
                     userInput = Console.ReadLine().ToLower();
 
-                    //Converting the stirng to a double after error checking to ensure that it is a numeric value >= 0
+                    // Convert the string to a double after error checking to ensure that it is a numeric value >= 0
                     ingredientQuantity = errorControl.CheckForPositiveNumber(userInput);
                 } while (ingredientQuantity == -1);
 
                 Console.WriteLine();
 
+                // Prompt the user to enter the amount of calories in the ingredient until a valid number is entered
                 do
                 {
-                    Console.Write("Please Enter The Amount Of Calories In \""
-                                  + ingredientName + "\": ");
+                    Console.Write("Please Enter The Amount Of Calories In \"" + ingredientName + "\": ");
                     userInput = Console.ReadLine();
                     ingredientCalories = (int)errorControl.CheckForPositiveNumber(userInput);
                 } while (ingredientCalories == -1);
 
                 Console.WriteLine();
 
+                // Prompt the user to select the food group of the ingredient
                 do
                 {
                     Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
@@ -333,12 +342,13 @@ namespace PROG6221_POE
                     ingredientFoodGroup = errorControl.CheckSelectFoodGroup(userInput);
                 } while (ingredientFoodGroup.Equals("Invalid"));
 
+                // Add the ingredient to the new recipe object
                 newRecipe.addIngredient(ingredientName, ingredientUnitOfMeasurement,
                                         ingredientQuantity, ingredientCalories, ingredientFoodGroup);
-
             }
 
-            for (int step = 0; step < numSteps; step++) // Loop from step 0 to step (numSteps - 1)
+            // Loop through the steps and prompt the user to enter step information
+            for (int step = 0; step < numSteps; step++)
             {
                 string stepInfo; // Declare a string variable to hold the step information
 
@@ -353,14 +363,15 @@ namespace PROG6221_POE
                     stepInfo = Console.ReadLine(); // Read the user input and store it in the stepInfo variable
                 } while (errorControl.CheckForNull(stepInfo) == false);
 
-                newRecipe.addStep(stepInfo); // Call the addStep method of the newRecipe object to add the step to the recipe
+                // Add the step to the new recipe object
+                newRecipe.addStep(stepInfo);
             }
 
-            //Add the recipe to the recipeList
+            // Add the recipe to the recipeList
             recipeList.Add(recipeName, newRecipe);
             animation.PrintMessage("positive", "Recipe Saved");
-
         }
+
 
         //----------------------------------------------------------------------------\\
         /* This method displays a list of saved recipes, prompts the user to 
@@ -370,7 +381,7 @@ namespace PROG6221_POE
             // Print title of the application.
             PrintTitle();
 
-            // Initialise variables for recipe selection and scale.
+            // Initialize variables for recipe selection and scale.
             int recipeNum = 1; // Counter for displaying recipe number
             double recipeScale = 0; // Scale factor of the selected recipe
             string userInput; // Variable for storing user's input
@@ -382,7 +393,7 @@ namespace PROG6221_POE
             // Check if there are any recipes saved.
             if (recipeList.Count == 0)
             {
-                // Display an error message and return to the.
+                // Display an error message and return to the main menu.
                 animation.PrintMessage("negative", "No Recipes Saved");
                 return;
             }
@@ -391,7 +402,6 @@ namespace PROG6221_POE
             Console.WriteLine("Please Select The Recipe You Want To Display:");
 
             // Display the list of recipes.
-
             foreach (string key in recipeList.Keys)
             {
                 Console.WriteLine(recipeNum + ") " + key); // Display the recipe number and name
@@ -405,25 +415,31 @@ namespace PROG6221_POE
             {
                 Console.Write("Enter Your Selection: ");
                 userInput = Console.ReadLine(); // Read user's input from the console
+
+                // Check if the user's input matches a recipe name in a case-insensitive manner
                 if (recipeList.Keys.Any(key => key.Equals(userInput, StringComparison.OrdinalIgnoreCase)))
                 {
+                    // Get the exact recipe name that matches the user's input
                     recipeName = recipeList.FirstOrDefault(pair => pair.Key.Equals(userInput, StringComparison.OrdinalIgnoreCase)).Key;
                 }
-
                 else if (userInput.ToLower().Equals("abort delete") || "6)".Contains(userInput))
                 {
+                    // Return to the main menu or abort deleting the recipe
                     return;
                 }
                 else
                 {
+                    // Convert the user's input to an integer and check if it falls within the range of available recipe numbers
                     convertedUserInput = (int)errorControl.CheckForPositiveNumber(userInput);
                     if (convertedUserInput > 0 && convertedUserInput <= recipeNum)
                     {
+                        // Get the recipe name based on the user's input
                         recipeName = recipeList.ElementAt(convertedUserInput - 1).Key;
                     }
                 }
             } while (errorControl.CheckForNull(recipeName) == false); // Check if the input is valid
 
+            // Get the recipe object to display
             recipeToDisplay = recipeList.GetValueOrDefault(recipeName);
             RecipeActions getInfo = new RecipeActions(recipeToDisplay.GetCalorieInformation);
 
@@ -444,30 +460,33 @@ namespace PROG6221_POE
                 {
                     // Prompt the user to enter their selection of scale
                     Console.Write("Enter Your Selection Of Scale: ");
-                    // Read the user input from the console, convert it to lowercase, and trim it to 2 characters
                     userInput = Console.ReadLine().ToLower();
 
-                    recipeScale = errorControl.CheckSetScale(userInput); // Check if the input is valid and set the recipe scale
+                    // Check if the input is valid and set the recipe scale
+                    recipeScale = errorControl.CheckSetScale(userInput);
                 } while (recipeScale == 0); // Continue the loop if the recipe scale is not set
 
                 PrintTitle();
                 Console.WriteLine("Recipe: " + recipeName + "\n");
-                Console.WriteLine(recipeToDisplay.DisplayRecipe(recipeScale)); // Display the recipe with the selected scale
+                // Display the recipe with the selected scale
+                Console.WriteLine(recipeToDisplay.DisplayRecipe(recipeScale));
 
                 totalCalories = recipeToDisplay.TotalCalories(recipeScale);
 
+                // Call the getInfo function to retrieve calorie information
                 getInfo(totalCalories);
                 Console.WriteLine();
 
                 // Prompt the user for the next action
                 Console.WriteLine("\nWould You Like To:" +
-                      "\n1) Reset Scale" +
-                      "\n2) Return To Menu" +
-                      "\n");
+                                  "\n1) Reset Scale" +
+                                  "\n2) Return To Menu" +
+                                  "\n");
                 Console.Write("Enter Your Numeric Selection: ");
                 userInput = Console.ReadLine(); // Read user's input from the console
             } while (errorControl.CheckSetScaleMenuChoice(userInput)); // Continue the loop based on the user's selection
         }
+
 
         //----------------------------------------------------------------------------\\
         /* This method prompts the user to enter the singular and plural forms of a 
