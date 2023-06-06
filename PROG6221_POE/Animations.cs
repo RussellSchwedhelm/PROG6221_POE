@@ -45,6 +45,7 @@ namespace PROG6221_POE
         public void CalorieAlert()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine();
             for (int loopNumber = 0; loopNumber < 4; loopNumber++)
             {
                 for (int space = 4; space > loopNumber + 1; space--)
@@ -64,6 +65,7 @@ namespace PROG6221_POE
                 ErrorControl.ClearCurrentConsoleLine();
                 Console.WriteLine();
             }
+            Console.SetCursorPosition(0, Console.CursorTop - 1); // Move the cursor to the beginning of the above line
         }
     }
 }

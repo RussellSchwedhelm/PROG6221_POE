@@ -26,7 +26,7 @@ namespace PROG6221_POE
         {
             int currentLineCursor = Console.CursorTop - 1; // Get the current line position and subtract 1 to move one line above
             Console.SetCursorPosition(0, currentLineCursor); // Move the cursor to the beginning of the line
-            Console.Write(new string(' ', Console.WindowWidth)); // Overwrite the line with spaces, clearing its content
+            Console.Write(new string(' ', 200)); // Overwrite the line with spaces, clearing its content
             Console.SetCursorPosition(0, currentLineCursor); // Reset the cursor position back to the original line
         }
 
