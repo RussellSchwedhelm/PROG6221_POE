@@ -1,8 +1,9 @@
 ﻿using System;
-public delegate void RecipeActions(double input);
 
 namespace PROG6221_POE
 {
+    public delegate string RecipeActions(double input);
+
     public class Recipe
     {
         private List<Ingredient> ingredientsList = new List<Ingredient>();
@@ -75,8 +76,6 @@ namespace PROG6221_POE
             // Return the combined recipe string
             return recipe;
         }
-
-
         //----------------------------------------------------------------------------\\
         /* This method takes in a scale factor, a quantity value,
         and a string representing the unit of measurement for that value
@@ -246,40 +245,94 @@ namespace PROG6221_POE
         }
 
         // This method provides calorie information based on the total calorie count of a meal.
-        // It returns a string describing the energy content of the meal, categorized into four levels:
+        // It prints a string describing the energy content of the meal, categorized into four levels:
         // - Very low in energy content for meals with less than 75 calories.
         // - Relatively low in calories for meals between 75 and 150 calories.
         // - Slightly more substantial in energy content for meals between 150 and 300 calories.
         // - Significant in terms of energy content for meals with 300 or more calories.
         // The method also sets the console text color based on the calorie level for visual distinction.
-        public void GetCalorieInformation(double totalCalories)
+        public string GetCalorieInformation(double totalCalories)
         {
-            string low = " calories is considered very low in energy content, providing minimal fuel for the body";
-            string medium = " calories, a meal remains relatively low in calories, offering a modest amount of energy";
-            string mediumHigh = " calories provides a slightly more substantial energy content, offering a bit more fuel for the body";
-            string high = " calories is considered significant in terms of energy content, providing a more substantial amount of fuel for the body";
+            string low = " calories is considered very low in energy content, providing minimal nutrients for the body";
+            string medium = " calories, is a relatively low amount of calories, offering only a modest amount of nutrients";
+            string mediumHigh = " calories provides a slightly more substantial energy content, offering a bit more nutrients for the body";
+            string high = " calories is considered significant in terms of energy content, providing a very substantial amount of nutrients for the body";
 
             if (totalCalories < 75) // If total calories is less than 75
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow; // Set console text color to dark yellow
-                Console.Write("[" + totalCalories + low + "]"); // Return the low calorie information
+                return ("\n[" + totalCalories + low + "]"); // Return the low calorie information
             }
             else if (totalCalories >= 75 && totalCalories < 150) // If total calories is between 75 and 150
             {
                 Console.ForegroundColor = ConsoleColor.Yellow; // Set console text color to yellow
-                Console.Write("[" + totalCalories + medium + "]");
+                return ("\n[" + totalCalories + medium + "]");
             }
             else if (totalCalories >= 150 && totalCalories < 300) // If total calories is between 150 and 300
             {
                 Console.ForegroundColor = ConsoleColor.Green; // Set console text color to green
-                Console.Write("[" + totalCalories + mediumHigh + "]");
+                return ("\n[" + totalCalories + mediumHigh + "]");
             }
             else // For any other total calorie values
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow; // Set console text color to dark yellow
-                Console.Write("[" + totalCalories + high + "]");
+                Animations animation = new Animations();
+                AnimationsActions alert = new AnimationsActions(animation.CalorieAlert);
+                alert();
+                return ("\n[" + totalCalories + high + "]");
             }
-            Console.ResetColor();
+        }
+        //----------------------------------------------------------------------------\\
+        // The information on the traditional food groups was provided by ChatGPT, an AI language model developed by OpenAI.
+        // For more detailed information, please consult reliable nutrition sources or consult a healthcare professional.
+
+        // The DisplayFoodGroupInfo method prints information about different food groups, ensuring line wrapping at 75 characters.
+        // It splits the information into words, printing each word and adding a newline when necessary to maintain the line length.
+        // After displaying the information, it prompts the user to press 'Enter' to return to the menu.
+        public static void DisplayFoodGroupInfo()
+        {
+            // Define the information for each food group
+            string fruits = "Fruits: Sweet and refreshing plant-based foods that provide essential vitamins, minerals, fiber, and antioxidants. Examples include apples, oranges, berries, and melons.";
+            string vegetables = "Vegetables: Nourishing and diverse plant-based foods that offer a wide range of vitamins, minerals, fiber, and beneficial plant compounds. Examples include leafy greens, broccoli, carrots, and peppers.";
+            string grains = "Grains: Staple foods made from cereal crops such as wheat, rice, oats, and corn. Grains are a significant source of carbohydrates, fiber, and various nutrients like B vitamins and minerals. Examples include bread, rice, pasta, and cereals.";
+            string protein = "Protein: Foods that are rich in protein, necessary for building and repairing body tissues. This group includes animal sources like meat, poultry, fish, eggs, and dairy, as well as plant-based sources like legumes (beans, lentils), tofu, nuts, and seeds.";
+            string dairy = "Dairy: Dairy products, such as milk, cheese, and yogurt, are excellent sources of calcium, protein, and other essential nutrients. Dairy provides bone-strengthening minerals and can be part of a healthy diet. Plant-based alternatives like soy or almond milk are also available for those who avoid dairy.";
+            string fatsAndOils = "Fats or Oils: This group includes fats and oils that provide energy and essential fatty acids. While it's important to consume them in moderation, healthy fats from sources like avocados, nuts, seeds, and olive oil can be part of a balanced diet.";
+
+            // Create an array to store the food group information
+            string[] foodGroups = { fruits, vegetables, grains, protein, dairy, fatsAndOils };
+
+            // Initialize variables
+            string[] info;
+            int limit = 0;
+
+            Program.PrintTitle();
+            Console.WriteLine("Here Is Information About The Food Groups Which Encompass All Ingredients:\n");
+
+            // Iterate over each food group
+            for (int group = 0; group < 6; group++)
+            {
+                // Split the information into words
+                info = foodGroups[group].Split(' ', '-');
+
+                // Iterate over each word in the food group information
+                foreach (string word in info)
+                {
+                    // Check if adding the word exceeds the character limit
+                    if (limit + word.Length > 75)
+                    {
+                        Console.WriteLine();
+                        limit = 0;
+                    }
+
+                    Console.Write(word + ' ');
+                    limit += word.Length + 1;
+                }
+
+                Console.WriteLine("\n");
+            }
+
+            Console.Write("\nPress 'Enter' To Return To Menu...");
+            Console.ReadLine();
         }
     }
 

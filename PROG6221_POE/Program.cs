@@ -3,9 +3,9 @@ using System.Drawing;
 
 namespace PROG6221_POE
 {
+    public delegate void MenuAction();
     class Program
     {
-        private delegate void MenuAction();
         //A dictionary which stores created recipes
         SortedDictionary<string, Recipe> recipeList = new SortedDictionary<string, Recipe>(StringComparer.OrdinalIgnoreCase);
         ErrorControl errorControl = new ErrorControl();
@@ -30,7 +30,7 @@ namespace PROG6221_POE
         and prints the programme title and a separator. */
         // The ASCII text art used in this code is obtained from the website:
         // https://patorjk.com/software/taag/#p=display&h=2&f=Doom&t=RECIPE%20BOOK
-        public void PrintTitle()
+        public static void PrintTitle()
         {
             // Clear the console.
             Console.Clear();
@@ -50,6 +50,7 @@ namespace PROG6221_POE
             // Print a line to separate the title.
             Console.WriteLine("---------------------------------------------------------------");
         }
+        //----------------------------------------------------------------------------\\
 
         private void InitializeMenuActions()
         {
@@ -58,7 +59,7 @@ namespace PROG6221_POE
                 CreateRecipe,
                 DisplayRecipeAction,
                 DeleteRecipe,
-                DisplayFoodGroupInfo,
+                Recipe.DisplayFoodGroupInfo,
                 ExitProgram
             };
         }
@@ -75,13 +76,13 @@ namespace PROG6221_POE
                 do
                 {
                     // Print the program title and menu options.
-                    Console.WriteLine("=== Recipe Manager ===");
+                    PrintTitle();
                     Console.WriteLine("1) Enter New Recipe");
                     Console.WriteLine("2) Display Recipe");
                     Console.WriteLine("3) Delete Recipe");
                     Console.WriteLine("4) Display Food Group Info");
                     Console.WriteLine("5) Exit");
-                    Console.Write("Enter Your Numeric Selection: ");
+                    Console.Write("\nEnter Your Numeric Selection: ");
 
                     userInput = Console.ReadLine(); // Read user input from the console
 
@@ -148,7 +149,7 @@ namespace PROG6221_POE
                     // Retrieve the recipe name based on the user input (case-insensitive)
                     recipeName = recipeList.FirstOrDefault(pair => pair.Key.Equals(userInput, StringComparison.OrdinalIgnoreCase)).Key;
                 }
-                else if (userInput.ToLower().Equals("abort delete") || "6)".Contains(userInput))
+                else if (userInput.ToLower().Equals("abort delete") || (recipeList.Count + 1 + "").Equals(userInput))
                 {
                     return; // User chooses to abort the delete operation
                 }
@@ -327,16 +328,17 @@ namespace PROG6221_POE
                 Console.WriteLine();
 
                 // Prompt the user to select the food group of the ingredient
+                Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
+                Console.Write("\n1) Fruits" +
+                              "\n2) Vegetables" +
+                              "\n3) Grains" +
+                              "\n4) Protein" +
+                              "\n5) Dairy" +
+                              "\n6) Fats Or Oils\n\n");
+
                 do
                 {
-                    Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
-                    Console.Write("\n1) Fruits" +
-                                  "\n2) Vegetables" +
-                                  "\n3) Grains" +
-                                  "\n4) Protein" +
-                                  "\n5) Dairy" +
-                                  "\n6) Fats Or Oils");
-                    Console.Write("\n\nEnter Your Selection: ");
+                    Console.Write("Enter Your Selection: ");
 
                     userInput = Console.ReadLine();
                     ingredientFoodGroup = errorControl.CheckSelectFoodGroup(userInput);
@@ -441,7 +443,13 @@ namespace PROG6221_POE
 
             // Get the recipe object to display
             recipeToDisplay = recipeList.GetValueOrDefault(recipeName);
-            RecipeActions getInfo = new RecipeActions(recipeToDisplay.GetCalorieInformation);
+
+            RecipeActions getInfo = (input) =>
+            {
+                Console.Write(recipeToDisplay.GetCalorieInformation(input));
+                Console.ResetColor();
+                return null;
+            };
 
             // Loop for setting the scale of the selected recipe
             do
@@ -511,59 +519,7 @@ namespace PROG6221_POE
 
         }
         //----------------------------------------------------------------------------\\
-        // The information on the traditional food groups was provided by ChatGPT, an AI language model developed by OpenAI.
-        // For more detailed information, please consult reliable nutrition sources or consult a healthcare professional.
-
-        // The DisplayFoodGroupInfo method prints information about different food groups, ensuring line wrapping at 75 characters.
-        // It splits the information into words, printing each word and adding a newline when necessary to maintain the line length.
-        // After displaying the information, it prompts the user to press 'Enter' to return to the menu.
-        public void DisplayFoodGroupInfo()
-        {
-            // Define the information for each food group
-            string fruits = "Fruits: Sweet and refreshing plant-based foods that provide essential vitamins, minerals, fiber, and antioxidants. Examples include apples, oranges, berries, and melons.";
-            string vegetables = "Vegetables: Nourishing and diverse plant-based foods that offer a wide range of vitamins, minerals, fiber, and beneficial plant compounds. Examples include leafy greens, broccoli, carrots, and peppers.";
-            string grains = "Grains: Staple foods made from cereal crops such as wheat, rice, oats, and corn. Grains are a significant source of carbohydrates, fiber, and various nutrients like B vitamins and minerals. Examples include bread, rice, pasta, and cereals.";
-            string protein = "Protein: Foods that are rich in protein, necessary for building and repairing body tissues. This group includes animal sources like meat, poultry, fish, eggs, and dairy, as well as plant-based sources like legumes (beans, lentils), tofu, nuts, and seeds.";
-            string dairy = "Dairy: Dairy products, such as milk, cheese, and yogurt, are excellent sources of calcium, protein, and other essential nutrients. Dairy provides bone-strengthening minerals and can be part of a healthy diet. Plant-based alternatives like soy or almond milk are also available for those who avoid dairy.";
-            string fatsAndOils = "Fats or Oils: This group includes fats and oils that provide energy and essential fatty acids. While it's important to consume them in moderation, healthy fats from sources like avocados, nuts, seeds, and olive oil can be part of a balanced diet.";
-
-            // Create an array to store the food group information
-            string[] foodGroups = { fruits, vegetables, grains, protein, dairy, fatsAndOils };
-
-            // Initialize variables
-            string[] info;
-            int limit = 0;
-
-            PrintTitle();
-            Console.WriteLine("Here Is Information About The Food Groups Which Encompass All Ingredients:\n");
-
-            // Iterate over each food group
-            for (int group = 0; group < 6; group++)
-            {
-                // Split the information into words
-                info = foodGroups[group].Split(' ', '-');
-
-                // Iterate over each word in the food group information
-                foreach (string word in info)
-                {
-                    // Check if adding the word exceeds the character limit
-                    if (limit + word.Length > 75)
-                    {
-                        Console.WriteLine();
-                        limit = 0;
-                    }
-
-                    Console.Write(word + ' ');
-                    limit += word.Length + 1;
-                }
-
-                Console.WriteLine("\n");
-            }
-
-            Console.Write("\nPress 'Enter' To Return To Menu...");
-            Console.ReadLine();
-        }
-
+        // This method exits the program using the exit code 0
         public void ExitProgram()
         {
             Environment.Exit(0);

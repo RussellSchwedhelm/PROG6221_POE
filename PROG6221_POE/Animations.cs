@@ -3,35 +3,33 @@
 using System;
 namespace PROG6221_POE
 {
+    public delegate void AnimationsActions();
     public class Animations
     {
         public void PrintMessage(string messageType, string message)
         {
-            // create a new instance of the Program class
-            Program program = new Program();
-
             // if the messageType is "negative", print the message in red
             if (messageType.Equals("negative"))
             {
-                program.PrintTitle(); // call the PrintTitle method from the Program class
+                Program.PrintTitle(); // call the PrintTitle method from the Program class
                 Console.ForegroundColor = ConsoleColor.Red; // set the console text color to red
                 Console.Write(message); // print the message
-                loadingAnimation(Console.ForegroundColor); // call the loadingAnimation method with the current console text color
+                LoadingAnimation(Console.ForegroundColor); // call the loadingAnimation method with the current console text color
                 Console.ResetColor(); // reset the console text color to the default
             }
             // if the messageType is not "negative", print the message in green
             else
             {
-                program.PrintTitle(); // call the PrintTitle method from the Program class
+                Program.PrintTitle(); // call the PrintTitle method from the Program class
                 Console.ForegroundColor = ConsoleColor.Green; // set the console text color to green
                 Console.Write(message); // print the message
-                loadingAnimation(Console.ForegroundColor); // call the loadingAnimation method with the current console text color
+                LoadingAnimation(Console.ForegroundColor); // call the loadingAnimation method with the current console text color
                 Console.ResetColor(); // reset the console text color to the default
             }
         }
         //----------------------------------------------------------------------------\\
         //A method which prints a loadign animation when called
-        public void loadingAnimation(ConsoleColor colour)
+        public void LoadingAnimation(ConsoleColor colour)
         {
             //Setting the colour of the text
             Console.ForegroundColor = colour;
@@ -43,7 +41,29 @@ namespace PROG6221_POE
             }
             Thread.Sleep(400);
         }
-    }
         //----------------------------------------------------------------------------\\
+        public void CalorieAlert()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            for (int loopNumber = 0; loopNumber < 4; loopNumber++)
+            {
+                for (int space = 4; space > loopNumber + 1; space--)
+                {
+                    Console.Write(" ");
+                }
+                for (int dot = 0; dot < loopNumber + 1; dot++)
+                {
+                    Console.Write(".");
+                }
+                Console.Write("ALERT");
+                for (int dot = 0; dot < loopNumber + 1; dot++)
+                {
+                    Console.Write(".");
+                }
+                Thread.Sleep(500);
+                ErrorControl.ClearCurrentConsoleLine();
+            }
+        }
+    }
 }
 //----------------------------------------------------------------------------\\

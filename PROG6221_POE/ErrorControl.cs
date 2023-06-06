@@ -16,19 +16,22 @@ namespace PROG6221_POE
             LoadingAnimation(Console.ForegroundColor);
             // Clear the current console line
             ClearCurrentConsoleLine();
-            // Move the cursor to the start of the next line
-            Console.SetCursorPosition(0, Console.CursorTop + 1);
             // Reset the console text colour to default
             Console.ResetColor();
+            Console.WriteLine();
         }
         //----------------------------------------------------------------------------\\
         //Clears the current console line by printing blank spaces over the existing text.
-        public void ClearCurrentConsoleLine()
+        public static void ClearCurrentConsoleLine()
         {
-            Console.SetCursorPosition(0, Console.CursorTop - 1); //Setting the cursor position to the begining of the current line
-            Console.Write(new string(' ', Console.WindowWidth + 100));//Printing blank spaces for the length of the console + 100 characters over the existing text
-            Console.SetCursorPosition(0, Console.CursorTop - 1); //Setting the cursor position to the begining of the current line
+            int currentLineCursor = Console.CursorTop - 1; // Get the current line position and subtract 1 to move one line above
+            Console.SetCursorPosition(0, currentLineCursor); // Move the cursor to the beginning of the line
+            int test = Console.WindowWidth;
+            Console.Write('\n');
+            Console.Write(new string(' ', Console.WindowWidth)); // Overwrite the line with spaces, clearing its content
+            Console.SetCursorPosition(0, currentLineCursor); // Reset the cursor position back to the original line
         }
+
         //----------------------------------------------------------------------------\\
         //Prints a loading animation consisting of three dots, with a specified color.
         //A method which prints a loadign animation when called

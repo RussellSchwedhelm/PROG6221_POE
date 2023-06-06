@@ -1,0 +1,11 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = TestCalorieAlert
+build_property.ProjectDir = /Users/russellschwedhelm/Library/CloudStorage/OneDrive-ADvTECHLtd/Year 2/Semester 1/PROG6221/POE/Answer Sheets/PROG6221_POE/TestCalorieAlert/
