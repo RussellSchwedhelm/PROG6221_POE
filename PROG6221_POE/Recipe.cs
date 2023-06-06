@@ -261,24 +261,24 @@ namespace PROG6221_POE
             if (totalCalories < 75) // If total calories is less than 75
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow; // Set console text color to dark yellow
-                return ("\n[" + totalCalories + low + "]"); // Return the low calorie information
+                return ("[" + totalCalories + low + "]"); // Return the low calorie information
             }
             else if (totalCalories >= 75 && totalCalories < 150) // If total calories is between 75 and 150
             {
                 Console.ForegroundColor = ConsoleColor.Yellow; // Set console text color to yellow
-                return ("\n[" + totalCalories + medium + "]");
+                return ("[" + totalCalories + medium + "]");
             }
             else if (totalCalories >= 150 && totalCalories < 300) // If total calories is between 150 and 300
             {
                 Console.ForegroundColor = ConsoleColor.Green; // Set console text color to green
-                return ("\n[" + totalCalories + mediumHigh + "]");
+                return ("[" + totalCalories + mediumHigh + "]");
             }
             else // For any other total calorie values
             {
                 Animations animation = new Animations();
                 AnimationsActions alert = new AnimationsActions(animation.CalorieAlert);
                 alert();
-                return ("\n[" + totalCalories + high + "]");
+                return ("[" + totalCalories + high + "]");
             }
         }
         //----------------------------------------------------------------------------\\

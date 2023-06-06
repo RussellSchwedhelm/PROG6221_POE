@@ -60,8 +60,9 @@ namespace PROG6221_POE
                 {
                     Console.Write(".");
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(430);
                 ErrorControl.ClearCurrentConsoleLine();
+                Console.WriteLine();
             }
         }
     }
