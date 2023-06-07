@@ -42,8 +42,10 @@ namespace PROG6221_POE
             Thread.Sleep(400);
         }
         //----------------------------------------------------------------------------\\
+        // This methods prints out an alert animation
         public void CalorieAlert()
         {
+            //Setting the colour of the font to be dark yellow
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine();
             for (int loopNumber = 0; loopNumber < 4; loopNumber++)

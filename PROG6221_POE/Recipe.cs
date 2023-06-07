@@ -6,8 +6,8 @@ namespace PROG6221_POE
 
     public class Recipe
     {
-        private List<Ingredient> ingredientsList = new List<Ingredient>();
-        private List<string> stepsList = new List<string>();
+        public List<Ingredient> ingredientsList = new List<Ingredient>();
+        public List<string> stepsList = new List<string>();
         //----------------------------------------------------------------------------\\
         //Getters And Setters
         public List<Ingredient> IngredientsList { get => ingredientsList; set => ingredientsList = value; }
@@ -253,10 +253,14 @@ namespace PROG6221_POE
         // The method also sets the console text color based on the calorie level for visual distinction.
         public string GetCalorieInformation(double totalCalories)
         {
-            string low = " calories is considered very low in energy content, providing minimal nutrients for the body";
-            string medium = " calories, is a relatively low amount of calories, offering only a modest amount of nutrients";
-            string mediumHigh = " calories provides a slightly more substantial energy content, offering a bit more nutrients for the body";
-            string high = " calories is considered significant in terms of energy content, providing a very substantial amount of nutrients for the body";
+            string low = " calories is considered very low in energy content, providing minimal\n" +
+                         " nutrients for the body";
+            string medium = " calories, is a relatively low amount of calories, offering only a\n" +
+                            " modest amount of nutrients";
+            string mediumHigh = " calories provides a slightly more substantial energy content,\n" +
+                                " offering a bit more nutrients for the body";
+            string high = " calories is considered significant in terms of energy content,\n" +
+                          " providing a very substantial amount of nutrients for the body";
 
             if (totalCalories < 75) // If total calories is less than 75
             {

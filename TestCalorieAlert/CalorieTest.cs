@@ -39,8 +39,8 @@ namespace TestCalorieAlert
         {
             // Calculate the total calories for the recipe with the given scale
             var result = recipeClass.GetCalorieInformation(recipeLow.TotalCalories(recipeScale));
-            var expected = "\n[30 calories is considered very low in energy content," +
-                " providing minimal nutrients for the body]";
+            var expected = "\n[30 calories is considered very low in energy content, providing minimal\n" +
+                         " nutrients for the body]";
 
             // Assert that the calculated calorie information matches the expected result
             Assert.AreEqual(expected, result);
@@ -54,8 +54,8 @@ namespace TestCalorieAlert
         {
             // Calculate the total calories for the recipe with the given scale
             var result = recipeClass.GetCalorieInformation(recipeMedium.TotalCalories(recipeScale));
-            var expected = "\n[130 calories, is a relatively low amount of calories," +
-                " offering only a modest amount of nutrients]";
+            var expected = "\n[130 calories, is a relatively low amount of calories, offering only a\n" +
+                            " modest amount of nutrients]";
 
             // Assert that the calculated calorie information matches the expected result
             Assert.AreEqual(expected, result);
@@ -69,8 +69,8 @@ namespace TestCalorieAlert
         {
             // Calculate the total calories for the recipe with the given scale
             var result = recipeClass.GetCalorieInformation(recipeMediumHigh.TotalCalories(recipeScale));
-            var expected = "\n[200 calories provides a slightly more substantial energy " +
-                "content, offering a bit more nutrients for the body]";
+            var expected = "\n[200 calories provides a slightly more substantial energy content,\n" +
+                                " offering a bit more nutrients for the body]";
 
             // Assert that the calculated calorie information matches the expected result
             Assert.AreEqual(expected, result);
@@ -84,8 +84,8 @@ namespace TestCalorieAlert
         {
             // Calculate the total calories for the recipe with the given scale
             var result = recipeClass.GetCalorieInformation(recipeHigh.TotalCalories(recipeScale));
-            var expected = "\n[1672 calories is considered significant in terms of energy " +
-                "content, providing a very substantial amount of nutrients for the body]";
+            var expected = "\n[1672 calories is considered significant in terms of energy content,\n" +
+                          " providing a very substantial amount of nutrients for the body]";
 
             // Assert that the calculated calorie information matches the expected result
             Assert.AreEqual(expected, result);

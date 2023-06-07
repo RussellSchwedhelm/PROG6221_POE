@@ -118,7 +118,6 @@ namespace PROG6221_POE
             int convertedUserInput; // Stores the converted user input as an integer
             int checkedUserInput; // Stores the checked user input (1 for Yes, 2 for No, 0 for invalid input)
             int recipeNum = 1; // Counter for displaying recipe numbers
-            Recipe recipeToDisplay = null; // Stores the recipe to be displayed
             string recipeName = ""; // Stores the name of the selected recipe
 
             // Check if there are any saved recipes
@@ -199,11 +198,19 @@ namespace PROG6221_POE
             // Declaring variables
             string userInput; // Used to take user input from the console
             string recipeName; // Used to store the user inputted recipe name
-            int numIngredients = -1; // Used to store the user inputted number of ingredients
-            int numSteps = -1; // Used to store the user inputted number of steps
+            string continueAddition; // Used to store the user's decision as to continue the addition of steps or ingredients
+            int numIngredients = 0; // Used to store the user inputted number of ingredients
+            int numSteps = 0; // Used to store the user inputted number of steps
+
+            // Declare and initialize variables for the ingredients
+            string ingredientName;
+            double ingredientQuantity = -1;
+            string ingredientUnitOfMeasurement = "";
+            string ingredientFoodGroup = "";
+            int ingredientCalories = -1;
 
             // Declare a new recipe object
-            Recipe newRecipe;
+            Recipe newRecipe = new Recipe();
 
             // Prompt the user to enter the name of the new recipe and check if it's not null
             do
@@ -219,12 +226,101 @@ namespace PROG6221_POE
                 PrintTitle();
                 Console.WriteLine("Recipe: " + recipeName);
                 Console.WriteLine();
-                Console.Write("How Many Ingredients Do You Want To Add: ");
-                userInput = Console.ReadLine().ToLower();
+                do
+                {
+                    Console.Write("Would You Like To Add An Ingredient (Y/N): ");
+                    continueAddition = Console.ReadLine();
+                } while (errorControl.CheckYesOrNo(continueAddition) == 0);
+                
 
-                // Convert the user input to an integer
-                numIngredients = (int)errorControl.CheckForPositiveNumber(userInput);
-            } while (numIngredients == -1);
+                if (errorControl.CheckYesOrNo(continueAddition) == 1)
+                {
+                    numIngredients++;
+
+                    // Prompt the user to enter the name of the ingredient until a non-null value is entered
+                    do
+                    {
+                        PrintTitle();
+                        Console.WriteLine("Recipe: " + recipeName);
+                        Console.Write("\nPlease Enter The Name Of The Ingredient: ");
+                        ingredientName = Console.ReadLine();
+                    } while (errorControl.CheckForNull(ingredientName) == false);
+
+                    Console.WriteLine();
+
+                    // Prompt the user to select the unit of measurement for the ingredient
+                    Console.Write("Please Select The Unit Of Measurement For \"" + ingredientName + "\": ");
+                    Console.WriteLine("\n1) Teaspoon(s)" +
+                                      "\n2) Tablespoon(s)" +
+                                      "\n3) Cup(s)" +
+                                      "\n4) Gram(s)" +
+                                      "\n5) Kilogram(s)" +
+                                      "\n6) Custom Unit" +
+                                      "\n");
+
+                    // Do this while the user input does not fall within the range 1 - 6
+                    do
+                    {
+                        Console.Write("Enter Your Selection: ");
+                        userInput = Console.ReadLine().ToLower();
+
+                        ingredientUnitOfMeasurement = errorControl.CheckSelectUnit(userInput);
+
+                    } while (ingredientUnitOfMeasurement.Equals("Invalid"));
+
+                    // If the user chose option 6 above
+                    if (ingredientUnitOfMeasurement == "Custom Unit")
+                    {
+                        ingredientUnitOfMeasurement = SetCustomScale();
+                    }
+
+                    Console.WriteLine();
+
+                    // Prompt the user to enter the quantity for the ingredient until a valid number is entered
+                    do
+                    {
+                        Console.Write("Please Enter The Quantity For \"" + ingredientName + "\": ");
+                        userInput = Console.ReadLine().ToLower();
+
+                        // Convert the string to a double after error checking to ensure that it is a numeric value >= 0
+                        ingredientQuantity = errorControl.CheckForPositiveNumber(userInput);
+                    } while (ingredientQuantity == -1);
+
+                    Console.WriteLine();
+
+                    // Prompt the user to enter the amount of calories in the ingredient until a valid number is entered
+                    do
+                    {
+                        Console.Write("Please Enter The Amount Of Calories In \"" + ingredientName + "\": ");
+                        userInput = Console.ReadLine();
+                        ingredientCalories = (int)errorControl.CheckForPositiveNumber(userInput);
+                    } while (ingredientCalories == -1);
+
+                    Console.WriteLine();
+
+                    // Prompt the user to select the food group of the ingredient
+                    Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
+                    Console.Write("\n1) Fruits" +
+                                  "\n2) Vegetables" +
+                                  "\n3) Grains" +
+                                  "\n4) Protein" +
+                                  "\n5) Dairy" +
+                                  "\n6) Fats Or Oils\n\n");
+
+                    do
+                    {
+                        Console.Write("Enter Your Selection: ");
+
+                        userInput = Console.ReadLine();
+                        ingredientFoodGroup = errorControl.CheckSelectFoodGroup(userInput);
+                    } while (ingredientFoodGroup.Equals("Invalid"));
+
+                    // Add the ingredient to the new recipe object
+                    newRecipe.addIngredient(ingredientName, ingredientUnitOfMeasurement,
+                                            ingredientQuantity, ingredientCalories, ingredientFoodGroup);
+                }
+
+            } while (errorControl.CheckYesOrNo(continueAddition) == 1);
 
             // If the number of ingredients is 0, print an error message and abort creating the recipe
             if (numIngredients == 0)
@@ -239,134 +335,39 @@ namespace PROG6221_POE
                 PrintTitle();
                 Console.WriteLine("Recipe: " + recipeName);
                 Console.WriteLine();
-                Console.Write("How Many Steps Do You Want To Add: ");
-                userInput = Console.ReadLine().ToLower();
+                do
+                {
+                    Console.Write("Would You Like To Add A Step (Y/N): ");
+                    continueAddition = Console.ReadLine();
+                } while (errorControl.CheckYesOrNo(continueAddition) == 0);
 
-                // Convert the user input to an integer
-                numSteps = (int)errorControl.CheckForPositiveNumber(userInput);
-            } while (numSteps == -1);
+                if (errorControl.CheckYesOrNo(continueAddition) == 1)
+                {
+                    string stepInfo; // Declare a string variable to hold the step information
+
+                    numSteps++;
+
+                    PrintTitle(); // Call the PrintTitle method to display the program title
+                    Console.WriteLine("Recipe: " + recipeName); // Display the recipe name
+                    Console.WriteLine(); // Add a blank line for spacing
+
+                    // Prompt the user to enter step information until a non-null value is entered
+                    do
+                    {
+                        Console.Write("Please Enter Step Number " + (numSteps) + ": "); // Display a message with the current step number
+                        stepInfo = Console.ReadLine(); // Read the user input and store it in the stepInfo variable
+                    } while (errorControl.CheckForNull(stepInfo) == false);
+
+                    // Add the step to the new recipe object
+                    newRecipe.addStep(stepInfo);
+                }
+            } while (errorControl.CheckYesOrNo(continueAddition) == 1);
 
             // If the number of steps is 0, print an error message and abort creating the recipe
             if (numSteps == 0)
             {
                 animation.PrintMessage("negative", "No Steps To Be Added. Create Recipe Aborted");
                 return;
-            }
-
-            // Create a new recipe object with the given name, number of ingredients, and steps
-            newRecipe = new Recipe();
-
-            // Declare and initialize variables for the ingredients
-            string ingredientName;
-            double ingredientQuantity = -1;
-            string ingredientUnitOfMeasurement = "";
-            string ingredientFoodGroup = "";
-            int ingredientCalories = -1;
-
-            // Loop through the ingredients and prompt the user to enter their name, unit of measurement, and quantity
-            for (int ingredient = 0; ingredient < numIngredients; ingredient++)
-            {
-                // Prompt the user to enter the name of the ingredient until a non-null value is entered
-                do
-                {
-                    PrintTitle();
-                    Console.WriteLine("Recipe: " + recipeName);
-                    Console.Write("\nPlease Enter The Name Of The Ingredient: ");
-                    ingredientName = Console.ReadLine();
-                } while (errorControl.CheckForNull(ingredientName) == false);
-
-                Console.WriteLine();
-
-                // Prompt the user to select the unit of measurement for the ingredient
-                Console.Write("Please Select The Unit Of Measurement For \"" + ingredientName + "\": ");
-                Console.WriteLine("\n1) Teaspoon(s)" +
-                                  "\n2) Tablespoon(s)" +
-                                  "\n3) Cup(s)" +
-                                  "\n4) Gram(s)" +
-                                  "\n5) Kilogram(s)" +
-                                  "\n6) Custom Unit" +
-                                  "\n");
-
-                // Do this while the user input does not fall within the range 1 - 6
-                do
-                {
-                    Console.Write("Enter Your Selection: ");
-                    userInput = Console.ReadLine().ToLower();
-
-                    ingredientUnitOfMeasurement = errorControl.CheckSelectUnit(userInput);
-
-                } while (ingredientUnitOfMeasurement.Equals("Invalid"));
-
-                // If the user chose option 6 above
-                if (ingredientUnitOfMeasurement == "Custom Unit")
-                {
-                    ingredientUnitOfMeasurement = SetCustomScale();
-                }
-
-                Console.WriteLine();
-
-                // Prompt the user to enter the quantity for the ingredient until a valid number is entered
-                do
-                {
-                    Console.Write("Please Enter The Quantity For \"" + ingredientName + "\": ");
-                    userInput = Console.ReadLine().ToLower();
-
-                    // Convert the string to a double after error checking to ensure that it is a numeric value >= 0
-                    ingredientQuantity = errorControl.CheckForPositiveNumber(userInput);
-                } while (ingredientQuantity == -1);
-
-                Console.WriteLine();
-
-                // Prompt the user to enter the amount of calories in the ingredient until a valid number is entered
-                do
-                {
-                    Console.Write("Please Enter The Amount Of Calories In \"" + ingredientName + "\": ");
-                    userInput = Console.ReadLine();
-                    ingredientCalories = (int)errorControl.CheckForPositiveNumber(userInput);
-                } while (ingredientCalories == -1);
-
-                Console.WriteLine();
-
-                // Prompt the user to select the food group of the ingredient
-                Console.Write("Please Select The Food Group Of \"" + ingredientName + "\": ");
-                Console.Write("\n1) Fruits" +
-                              "\n2) Vegetables" +
-                              "\n3) Grains" +
-                              "\n4) Protein" +
-                              "\n5) Dairy" +
-                              "\n6) Fats Or Oils\n\n");
-
-                do
-                {
-                    Console.Write("Enter Your Selection: ");
-
-                    userInput = Console.ReadLine();
-                    ingredientFoodGroup = errorControl.CheckSelectFoodGroup(userInput);
-                } while (ingredientFoodGroup.Equals("Invalid"));
-
-                // Add the ingredient to the new recipe object
-                newRecipe.addIngredient(ingredientName, ingredientUnitOfMeasurement,
-                                        ingredientQuantity, ingredientCalories, ingredientFoodGroup);
-            }
-
-            // Loop through the steps and prompt the user to enter step information
-            for (int step = 0; step < numSteps; step++)
-            {
-                string stepInfo; // Declare a string variable to hold the step information
-
-                PrintTitle(); // Call the PrintTitle method to display the program title
-                Console.WriteLine("Recipe: " + recipeName); // Display the recipe name
-                Console.WriteLine(); // Add a blank line for spacing
-
-                // Prompt the user to enter step information until a non-null value is entered
-                do
-                {
-                    Console.Write("Please Enter Step Number " + (step + 1) + ": "); // Display a message with the current step number
-                    stepInfo = Console.ReadLine(); // Read the user input and store it in the stepInfo variable
-                } while (errorControl.CheckForNull(stepInfo) == false);
-
-                // Add the step to the new recipe object
-                newRecipe.addStep(stepInfo);
             }
 
             // Add the recipe to the recipeList
