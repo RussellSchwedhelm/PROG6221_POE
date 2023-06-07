@@ -94,6 +94,9 @@ The menu's functionality was changed so that methods were called through the use
 ### Methods
 WordToDouble - ChatGPT. (2023, April 25). C# method to convert a word to a number (double) [Source code]. https://github.com/ChatGPT/Code-Samples/blob/main/CSharp/WordToDouble.cs
 
+## Lecturer Feedback Changes
+Based on the feedback provided I implemented several changes to the program to improve the UI and user experience. Most notably I included a detailed title which is printed in the console on every page. I also formatted longer strings of information so that they display neatly on the console and the user can better read them. Animations are included to further improve the user experience and the overall feel of the UI.
+
 ## GitHub Repository Link
 https://github.com/VCCT-PROG6221-2023-Grp2/PROG6221_POE.git
 
